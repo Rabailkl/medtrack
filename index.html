@@ -3,35 +3,40 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>MedTrack — Medicine Reminder</title>
+<title>Panda — Medicine Reminder</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
 <style>
 :root {
-  --green: #0e8a64;
-  --green-light: #e0f5ec;
-  --green-mid: #0a7c5c;
-  --green-dark: #075e46;
+  /* Panda palette — black, white, bamboo green */
+  --green: #4a7c59;
+  --green-light: #e8f5ed;
+  --green-mid: #2d2d2d;   /* panda black as primary */
+  --green-dark: #1a1a1a;
+  --panda-black: #2d2d2d;
+  --panda-white: #f9f9f9;
+  --bamboo: #5a8a4a;
+  --bamboo-light: #e8f5e0;
   --amber: #f59e0b;
-  --red: #ef4444;
+  --red: #e05252;
   --red-light: #fef2f2;
-  --blue: #3b82f6;
-  --blue-light: #eff6ff;
-  --orange: #f97316;
-  --orange-light: #fff7ed;
-  --bg: #f4f6f3;
+  --blue: #4a7fb5;
+  --blue-light: #eef4fb;
+  --orange: #e07840;
+  --orange-light: #fdf3ed;
+  --bg: #f5f5f0;
   --surface: #ffffff;
-  --surface2: #f8faf7;
-  --border: rgba(0,0,0,0.08);
-  --border2: rgba(0,0,0,0.14);
-  --text: #1a1f1c;
-  --text2: #5a6460;
-  --text3: #9aada6;
+  --surface2: #f7f7f5;
+  --border: rgba(0,0,0,0.07);
+  --border2: rgba(0,0,0,0.13);
+  --text: #1e1e1e;
+  --text2: #5a5a5a;
+  --text3: #a0a0a0;
   --radius: 16px;
   --radius-sm: 10px;
-  --shadow: 0 2px 12px rgba(0,0,0,0.06), 0 0 1px rgba(0,0,0,0.08);
-  --shadow-lg: 0 8px 32px rgba(0,0,0,0.12), 0 0 1px rgba(0,0,0,0.08);
+  --shadow: 0 2px 12px rgba(0,0,0,0.07), 0 0 1px rgba(0,0,0,0.07);
+  --shadow-lg: 0 8px 32px rgba(0,0,0,0.13), 0 0 1px rgba(0,0,0,0.08);
   --font-display: 'DM Serif Display', Georgia, serif;
   --font-body: 'DM Sans', system-ui, sans-serif;
 }
@@ -79,7 +84,7 @@ html, body {
 
 /* ── HEADER ── */
 .header {
-  background: var(--green-mid);
+  background: linear-gradient(135deg, #1e1e1e 0%, #2d2d2d 60%, #3a3a2a 100%);
   padding: 52px 20px 20px;
   position: relative;
   overflow: hidden;
@@ -181,7 +186,7 @@ html, body {
   letter-spacing: 0.03em; text-transform: uppercase;
 }
 .tab i { font-size: 20px; }
-.tab.active { color: var(--green-mid); border-bottom-color: var(--green-mid); }
+.tab.active { color: var(--panda-black); border-bottom-color: var(--panda-black); }
 
 /* ── SCROLL AREA ── */
 .scroll-area {
@@ -812,7 +817,7 @@ html, body {
 /* ── AUTH SCREEN ── */
 .auth-screen {
   position: fixed; inset: 0;
-  background: var(--green-mid);
+  background: linear-gradient(160deg, #1e1e1e 0%, #2d2d2d 50%, #3a3a2a 100%);
   display: flex; flex-direction: column;
   align-items: center; justify-content: center;
   padding: 32px 28px; z-index: 500;
@@ -928,6 +933,102 @@ html, body {
   display: flex; align-items: center; gap: 8px; text-align: left;
 }
 .logout-btn:hover { background: var(--red-light); }
+
+/* ══════════════════════════════
+   PANDA THEME DECORATIONS
+══════════════════════════════ */
+.header::before {
+  content: '';
+  position: absolute;
+  top: -50px; right: -30px;
+  width: 160px; height: 160px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.04);
+}
+.header::after {
+  content: '';
+  position: absolute;
+  bottom: -20px; left: 20px;
+  width: 90px; height: 90px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.03);
+}
+/* Panda SVG face in header */
+.panda-face {
+  position: absolute;
+  right: 18px; bottom: 14px;
+  opacity: 0.18;
+  width: 64px; height: 64px;
+  pointer-events: none;
+}
+/* Bamboo accent on cards */
+.med-card::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 10%; bottom: 10%;
+  width: 3px; border-radius: 0 3px 3px 0;
+  background: var(--panda-black);
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+.med-card:hover::before { opacity: 0.15; }
+
+/* Panda paw print on add button */
+.header-add-btn {
+  background: rgba(255,255,255,0.12);
+  border: 1px solid rgba(255,255,255,0.18);
+}
+/* Auth panda illustration */
+.auth-panda {
+  font-size: 72px;
+  line-height: 1;
+  margin-bottom: 8px;
+  filter: drop-shadow(0 4px 12px rgba(0,0,0,0.3));
+  animation: pandabob 3s ease-in-out infinite;
+}
+@keyframes pandabob {
+  0%,100% { transform: translateY(0) rotate(-2deg); }
+  50%      { transform: translateY(-6px) rotate(2deg); }
+}
+/* Bamboo progress bar */
+.progress-fill { background: #c8e6b0; }
+/* PIN dot panda style */
+.pin-dot.filled {
+  background: #2d2d2d;
+  border-color: #2d2d2d;
+  box-shadow: 0 0 0 2px rgba(45,45,45,0.15);
+}
+/* confirm button */
+.confirm-btn { background: #2d2d2d; }
+.confirm-btn:hover { background: #1a1a1a; }
+.auth-btn { background: #2d2d2d; }
+.auth-btn:hover { background: #1a1a1a; }
+.add-vital-btn { background: #2d2d2d; }
+.add-vital-btn:hover { background: #1a1a1a; }
+.btn-save { background: #2d2d2d; }
+.scan-go-btn { background: #2d2d2d; }
+.scan-go-btn:hover { background: #1a1a1a; }
+.cal-cell.today { background: #2d2d2d; }
+.check-btn.checked { background: #2d2d2d; border-color: #2d2d2d; }
+.check-btn:hover:not(.checked) { border-color: #2d2d2d; color: #2d2d2d; }
+.vt-btn.active { color: #2d2d2d; }
+.notif-banner .nb-action { color: #5a8a4a; }
+.ai-box-header i { color: #2d2d2d; }
+.add-ghost-btn:hover { border-color: #2d2d2d; color: #2d2d2d; }
+.sched-time-chip { background: #e8e8e4; color: #2d2d2d; }
+.reading-icon.bsr { background: #e8e8e4; }
+.reading-icon.bp  { background: #f0ecec; }
+/* Bamboo badge on vitals */
+.badge-normal { background: #e8f0e4; color: #3a6030; }
+.streak-seg.on { background: #2d2d2d; }
+.streak-seg.today { background: #2d2d2d; box-shadow: 0 0 6px rgba(45,45,45,0.4); }
+.week-bar { background: #2d2d2d; }
+.cal-cell.complete { background: #e8e8e4; color: #2d2d2d; }
+.cal-cell.has::after { background: #2d2d2d; }
+.tab { color: #a0a0a0; }
+.export-btn.csv { background: #e8e8e4; color: #2d2d2d; }
+.export-btn.csv:hover { background: #2d2d2d; color: white; }
+
 </style>
 </head>
 <body>
@@ -1065,7 +1166,7 @@ function scheduleNotifications() {
       const ms = target - now;
       if (ms > 0 && ms < 24*60*60*1000) {
         scheduledNotifs[key] = setTimeout(() => {
-          new Notification('MedTrack Reminder 💊', {
+          new Notification('Panda Reminder 🐼', {
             body: `Time to take ${med.name} (${med.dose}) in 5 minutes`,
             icon: '💊',
             tag: key,
@@ -1173,29 +1274,63 @@ async function scanPage(page) {
   const b64 = page.dataUrl.split(',')[1];
   page.status = 'scanning'; render();
   try {
-  const resp = await fetch('/.netlify/functions/scan', {
+    const resp = await fetch('/.netlify/functions/scan', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: 1200,
         messages: [{
           role: 'user',
           content: [
             { type: 'image', source: { type: 'base64', media_type: page.mime, data: b64 } },
-            { type: 'text', text: 'Extract all medicines from this prescription or schedule image. Return ONLY a valid JSON array, no markdown, no backticks, no extra text. Format: [{"name":"Medicine Name","dose":"dose amount","times":["HH:MM"],"notes":"instructions","category":"condition"}]. Use 24-hour time. List each daily dose time separately. If no medicine schedule found, return [].' }
+            { type: 'text', text: `You are a medical prescription reader. This image may be a handwritten or printed prescription, possibly in English, Urdu, or both languages mixed.
+
+Your job is to find ALL medicines/tablets/capsules/syrups mentioned anywhere in the image.
+
+Look carefully for:
+- Medicine names (even if partially legible or abbreviated)
+- Tablet/Cap/Syrup/Injection names
+- Dosage numbers (mg, ml, IU, units)
+- Frequency instructions (1+0+1, BD, TDS, OD, morning/evening, 2 times daily etc)
+- Any Rx section
+
+Convert frequency to times array in 24hr format:
+- OD / once daily = ["08:00"]
+- BD / twice daily = ["08:00","20:00"]  
+- TDS / 3 times = ["08:00","14:00","20:00"]
+- QID / 4 times = ["08:00","12:00","16:00","20:00"]
+- 1+0+1 = ["08:00","20:00"]
+- 1+1+1 = ["08:00","14:00","20:00"]
+- 4+0+4 = ["08:00","20:00"]
+- 2+0+2 = ["08:00","20:00"]
+
+Return ONLY a valid JSON array. No markdown, no backticks, no explanation. Example:
+[{"name":"Metformin","dose":"500mg","times":["08:00","20:00"],"notes":"with food","category":"Diabetes"}]
+
+If truly no medicines found, return [].` }
           ]
         }]
       })
     });
+    if (!resp.ok) {
+      const errText = await resp.text();
+      console.error('Scan proxy error:', resp.status, errText);
+      page.status = 'error';
+      return [];
+    }
     const data = await resp.json();
     const raw = (data.content||[]).find(b=>b.type==='text')?.text || '[]';
+    console.log('Scan raw response:', raw);
     let parsed = [];
-    try { parsed = JSON.parse(raw.replace(/```json|```/g,'').trim()); } catch(e2){}
+    try {
+      parsed = JSON.parse(raw.replace(/```json|```/g,'').trim());
+    } catch(e2) {
+      console.error('JSON parse failed:', e2, 'Raw was:', raw);
+    }
     page.status = 'done';
     page.found = parsed.length;
     return parsed;
   } catch(err) {
+    console.error('Scan fetch error:', err);
     page.status = 'error';
     return [];
   }
@@ -1350,7 +1485,7 @@ function renderHeader() {
   const h = el('div', {class:'header'});
   const top = el('div', {class:'header-top'});
   const brand = el('div', {class:'header-brand'});
-  brand.appendChild(el('div', {class:'brand-name'}, 'MedTrack'));
+  brand.appendChild(el('div', {class:'brand-name'}, '🐼 Panda'));
   brand.appendChild(el('div', {class:'brand-date'}, today.toLocaleDateString('en-GB', {weekday:'long', day:'numeric', month:'long'})));
   top.appendChild(brand);
   // User badge + logout
@@ -1389,6 +1524,29 @@ function renderHeader() {
   pt.appendChild(pf); pr.appendChild(pt);
   pr.appendChild(el('div', {class:'progress-pct'}, `${pct}%`));
   h.appendChild(pr);
+  // Panda face watermark
+  const pandaSvg = document.createElementNS('http://www.w3.org/2000/svg','svg');
+  pandaSvg.setAttribute('class','panda-face');
+  pandaSvg.setAttribute('viewBox','0 0 100 100');
+  pandaSvg.setAttribute('xmlns','http://www.w3.org/2000/svg');
+  pandaSvg.innerHTML = `
+    <circle cx="50" cy="54" r="36" fill="white"/>
+    <circle cx="28" cy="24" r="16" fill="white"/>
+    <circle cx="72" cy="24" r="16" fill="white"/>
+    <circle cx="28" cy="24" r="10" fill="#1e1e1e"/>
+    <circle cx="72" cy="24" r="10" fill="#1e1e1e"/>
+    <circle cx="34" cy="48" r="10" fill="#1e1e1e"/>
+    <circle cx="66" cy="48" r="10" fill="#1e1e1e"/>
+    <circle cx="36" cy="47" r="4" fill="white"/>
+    <circle cx="68" cy="47" r="4" fill="white"/>
+    <ellipse cx="50" cy="63" rx="10" ry="7" fill="#e8c8c8"/>
+    <circle cx="44" cy="61" r="3" fill="#1e1e1e"/>
+    <circle cx="56" cy="61" r="3" fill="#1e1e1e"/>
+    <path d="M44 68 Q50 74 56 68" stroke="#1e1e1e" stroke-width="2" fill="none" stroke-linecap="round"/>
+    <circle cx="38" cy="55" r="2" fill="white" opacity="0.8"/>
+    <circle cx="62" cy="55" r="2" fill="white" opacity="0.8"/>
+  `;
+  h.appendChild(pandaSvg);
   return h;
 }
 
@@ -1967,7 +2125,7 @@ function downloadCSV() {
   const a = document.createElement('a');
   a.href = url;
   const label = type === 'bsr' ? 'BSR' : 'BP';
-  a.download = `MedTrack_${label}_${ui.exportModal.dateFrom}_to_${ui.exportModal.dateTo}.csv`;
+  a.download = `Panda_${label}_${ui.exportModal.dateFrom}_to_${ui.exportModal.dateTo}.csv`;
   a.click();
   URL.revokeObjectURL(url);
   ui.modal = null; ui.exportModal = null;
@@ -2020,7 +2178,7 @@ function printPDF() {
 
   const area = document.getElementById('print-area');
   area.innerHTML = `
-    <h1>MedTrack — ${label} Report</h1>
+    <h1>🐼 Panda — ${label} Report</h1>
     <div class="print-meta">Period: ${dateFrom} to ${dateTo} &nbsp;·&nbsp; ${rows.length} reading(s) &nbsp;·&nbsp; Average: ${avg} &nbsp;·&nbsp; Generated: ${new Date().toLocaleString()}</div>
     ${tableHTML}
   `;
@@ -2437,7 +2595,7 @@ async function loginUser(phone) {
   }
   ui.authPin = ''; ui.authPinConfirm = ''; ui.authError = '';
   ui.authLoading = false;
-  showToast(`Welcome back!`, 'ti-home');
+  showToast(`Welcome back! 🐼`, 'ti-home');
   render();
   scheduleNotifications();
 }
@@ -2480,7 +2638,8 @@ function pinKeyPress(key) {
 // ── Auth screen renderer ──
 function renderAuthScreen() {
   const screen = el('div',{class:'auth-screen'});
-  screen.appendChild(el('div',{class:'auth-logo'},'MedTrack'));
+  screen.appendChild(el('div',{class:'auth-panda'},'🐼'));
+  screen.appendChild(el('div',{class:'auth-logo'},'Panda'));
   screen.appendChild(el('div',{class:'auth-tagline'},'Your personal health companion'));
 
   const card = el('div',{class:'auth-card'});
