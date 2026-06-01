@@ -1,0 +1,2600 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>MedTrack — Medicine Reminder</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<style>
+:root {
+  --green: #0e8a64;
+  --green-light: #e0f5ec;
+  --green-mid: #0a7c5c;
+  --green-dark: #075e46;
+  --amber: #f59e0b;
+  --red: #ef4444;
+  --red-light: #fef2f2;
+  --blue: #3b82f6;
+  --blue-light: #eff6ff;
+  --orange: #f97316;
+  --orange-light: #fff7ed;
+  --bg: #f4f6f3;
+  --surface: #ffffff;
+  --surface2: #f8faf7;
+  --border: rgba(0,0,0,0.08);
+  --border2: rgba(0,0,0,0.14);
+  --text: #1a1f1c;
+  --text2: #5a6460;
+  --text3: #9aada6;
+  --radius: 16px;
+  --radius-sm: 10px;
+  --shadow: 0 2px 12px rgba(0,0,0,0.06), 0 0 1px rgba(0,0,0,0.08);
+  --shadow-lg: 0 8px 32px rgba(0,0,0,0.12), 0 0 1px rgba(0,0,0,0.08);
+  --font-display: 'DM Serif Display', Georgia, serif;
+  --font-body: 'DM Sans', system-ui, sans-serif;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0f1410;
+    --surface: #1a201c;
+    --surface2: #202820;
+    --border: rgba(255,255,255,0.07);
+    --border2: rgba(255,255,255,0.13);
+    --text: #e8ede9;
+    --text2: #8fa898;
+    --text3: #4d6357;
+    --green-light: #0e2a1e;
+    --red-light: #2a0e0e;
+    --blue-light: #0e1a2a;
+    --orange-light: #2a1a0e;
+    --shadow: 0 2px 12px rgba(0,0,0,0.3), 0 0 1px rgba(0,0,0,0.4);
+    --shadow-lg: 0 8px 32px rgba(0,0,0,0.4), 0 0 1px rgba(0,0,0,0.4);
+  }
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+html, body {
+  height: 100%;
+  background: var(--bg);
+  font-family: var(--font-body);
+  color: var(--text);
+  overflow: hidden;
+}
+
+/* ── SHELL ── */
+#app {
+  max-width: 430px;
+  height: 100dvh;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg);
+  position: relative;
+  overflow: hidden;
+}
+
+/* ── HEADER ── */
+.header {
+  background: var(--green-mid);
+  padding: 52px 20px 20px;
+  position: relative;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+.header::before {
+  content: '';
+  position: absolute;
+  top: -60px; right: -40px;
+  width: 180px; height: 180px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.06);
+}
+.header::after {
+  content: '';
+  position: absolute;
+  bottom: -30px; left: 30px;
+  width: 100px; height: 100px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.04);
+}
+.header-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  position: relative;
+  z-index: 1;
+}
+.header-brand { color: white; }
+.brand-name {
+  font-family: var(--font-display);
+  font-size: 28px;
+  line-height: 1;
+  letter-spacing: -0.5px;
+}
+.brand-date {
+  font-size: 12px;
+  color: rgba(255,255,255,0.65);
+  margin-top: 4px;
+  font-weight: 300;
+  letter-spacing: 0.02em;
+}
+.header-add-btn {
+  width: 38px; height: 38px;
+  background: rgba(255,255,255,0.15);
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 50%;
+  color: white;
+  font-size: 20px;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.header-add-btn:hover { background: rgba(255,255,255,0.25); }
+.header-stats {
+  display: flex;
+  gap: 16px;
+  margin-top: 18px;
+  position: relative; z-index: 1;
+}
+.hstat {
+  flex: 1;
+  background: rgba(255,255,255,0.12);
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: var(--radius-sm);
+  padding: 10px 12px;
+}
+.hstat-val { font-size: 22px; font-weight: 600; color: white; line-height: 1; }
+.hstat-label { font-size: 10px; color: rgba(255,255,255,0.65); margin-top: 3px; letter-spacing: 0.04em; text-transform: uppercase; }
+.progress-row {
+  display: flex; align-items: center; gap: 10px;
+  margin-top: 14px;
+  position: relative; z-index: 1;
+}
+.progress-track {
+  flex: 1; height: 4px;
+  background: rgba(255,255,255,0.2);
+  border-radius: 2px; overflow: hidden;
+}
+.progress-fill {
+  height: 100%; background: white; border-radius: 2px;
+  transition: width 0.5s cubic-bezier(.4,0,.2,1);
+}
+.progress-pct { font-size: 12px; color: rgba(255,255,255,0.8); font-weight: 500; min-width: 30px; text-align: right; }
+
+/* ── TABS ── */
+.tabs {
+  display: flex;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+.tab {
+  flex: 1; padding: 10px 4px 8px;
+  display: flex; flex-direction: column; align-items: center; gap: 3px;
+  font-size: 10px; font-weight: 500; color: var(--text3);
+  cursor: pointer; border-bottom: 2px solid transparent;
+  transition: all 0.15s; user-select: none;
+  letter-spacing: 0.03em; text-transform: uppercase;
+}
+.tab i { font-size: 20px; }
+.tab.active { color: var(--green-mid); border-bottom-color: var(--green-mid); }
+
+/* ── SCROLL AREA ── */
+.scroll-area {
+  flex: 1; overflow-y: auto;
+  padding: 16px 16px 80px;
+  -webkit-overflow-scrolling: touch;
+}
+.scroll-area::-webkit-scrollbar { width: 0; }
+
+/* ── SECTION LABEL ── */
+.sec-label {
+  font-size: 10px; font-weight: 600; letter-spacing: 0.08em;
+  text-transform: uppercase; color: var(--text3);
+  margin: 20px 0 10px;
+}
+.sec-label:first-child { margin-top: 0; }
+
+/* ── MED CARD ── */
+.med-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px;
+  margin-bottom: 10px;
+  display: flex; align-items: center; gap: 12px;
+  cursor: pointer;
+  transition: all 0.15s;
+  position: relative;
+  box-shadow: var(--shadow);
+}
+.med-card:hover { border-color: var(--border2); transform: translateY(-1px); box-shadow: var(--shadow-lg); }
+.med-card:active { transform: scale(0.98); }
+.med-card.done { opacity: 0.55; }
+.med-card.done .med-name { text-decoration: line-through; }
+
+.med-icon {
+  width: 44px; height: 44px; border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px; flex-shrink: 0;
+}
+.med-info { flex: 1; min-width: 0; }
+.med-name { font-size: 15px; font-weight: 500; color: var(--text); }
+.med-dose { font-size: 12px; color: var(--text2); margin-top: 2px; }
+.med-note {
+  font-size: 11px; color: var(--text2);
+  background: var(--surface2); border-radius: 6px;
+  padding: 3px 8px; margin-top: 5px; display: inline-block;
+  border: 1px solid var(--border);
+  font-style: italic;
+}
+.med-right {
+  display: flex; flex-direction: column; align-items: flex-end; gap: 8px;
+  flex-shrink: 0;
+}
+.time-chip {
+  font-size: 12px; font-weight: 500; padding: 4px 10px;
+  border-radius: 20px; white-space: nowrap;
+}
+.time-chip.overdue { background: var(--red-light); color: var(--red); }
+.time-chip.due-soon { background: var(--orange-light); color: var(--orange); }
+.time-chip.upcoming { background: var(--blue-light); color: var(--blue); }
+.time-chip.done { background: var(--green-light); color: var(--green); }
+.time-chip.neutral { background: var(--surface2); color: var(--text2); }
+
+.check-btn {
+  width: 30px; height: 30px; border-radius: 50%;
+  border: 1.5px solid var(--border2);
+  background: transparent; color: var(--text3);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; font-size: 15px;
+  transition: all 0.18s;
+}
+.check-btn.checked { background: var(--green-mid); border-color: var(--green-mid); color: white; }
+.check-btn:hover:not(.checked) { border-color: var(--green-mid); color: var(--green-mid); }
+
+.alert-dot {
+  position: absolute; top: 10px; right: 10px;
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--orange); border: 2px solid var(--surface);
+  animation: pulse 1.5s infinite;
+}
+@keyframes pulse { 0%,100%{transform:scale(1);opacity:1} 50%{transform:scale(1.4);opacity:0.6} }
+
+/* ── EMPTY STATE ── */
+.empty {
+  text-align: center; padding: 60px 20px;
+  color: var(--text3);
+}
+.empty i { font-size: 52px; margin-bottom: 14px; display: block; opacity: 0.4; }
+.empty p { font-size: 14px; }
+.empty small { font-size: 12px; opacity: 0.7; margin-top: 4px; display: block; }
+
+/* ── UPLOAD TAB ── */
+.upload-zone {
+  border: 2px dashed var(--border2);
+  border-radius: var(--radius);
+  padding: 36px 20px;
+  text-align: center; cursor: pointer;
+  transition: all 0.15s; margin-bottom: 16px;
+  background: var(--surface);
+}
+.upload-zone:hover { border-color: var(--green-mid); background: var(--green-light); }
+.upload-zone i { font-size: 40px; color: var(--text3); margin-bottom: 10px; display: block; }
+.upload-zone .uz-title { font-size: 14px; font-weight: 500; color: var(--text); }
+.upload-zone .uz-sub { font-size: 12px; color: var(--text2); margin-top: 4px; }
+
+.ai-box {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 18px;
+  box-shadow: var(--shadow);
+  margin-bottom: 12px;
+}
+.ai-box-header {
+  display: flex; align-items: center; gap: 10px;
+  margin-bottom: 14px;
+}
+.ai-box-header i { font-size: 20px; color: var(--green-mid); }
+.ai-box-header span { font-size: 14px; font-weight: 600; color: var(--text); }
+.ai-thinking-dots {
+  display: flex; justify-content: center; gap: 6px; padding: 20px 0;
+}
+.ai-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--green-mid); animation: bounce 1.3s infinite;
+}
+.ai-dot:nth-child(2){animation-delay:.15s}
+.ai-dot:nth-child(3){animation-delay:.3s}
+@keyframes bounce{0%,80%,100%{transform:scale(0.7);opacity:0.4}40%{transform:scale(1.1);opacity:1}}
+
+/* Multi-page queue */
+.page-queue {
+  display: flex; flex-direction: column; gap: 8px;
+  margin-bottom: 12px;
+}
+.page-item {
+  display: flex; align-items: center; gap: 10px;
+  background: var(--surface2); border: 1px solid var(--border);
+  border-radius: var(--radius-sm); padding: 10px 12px;
+}
+.page-thumb {
+  width: 40px; height: 40px; border-radius: 7px;
+  object-fit: cover; flex-shrink: 0;
+  border: 1px solid var(--border);
+}
+.page-thumb-placeholder {
+  width: 40px; height: 40px; border-radius: 7px;
+  background: var(--border); flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--text3); font-size: 18px;
+}
+.page-info { flex: 1; min-width: 0; }
+.page-name { font-size: 12px; font-weight: 500; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.page-status { font-size: 11px; color: var(--text2); margin-top: 2px; }
+.page-status.scanning { color: var(--orange); }
+.page-status.done { color: var(--green); }
+.page-status.error { color: var(--red); }
+.page-remove {
+  width: 26px; height: 26px; border-radius: 50%; border: none;
+  background: var(--red-light); color: var(--red);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; font-size: 13px; flex-shrink: 0;
+}
+.scan-actions { display: flex; gap: 8px; margin-bottom: 12px; }
+.scan-add-btn {
+  flex: 1; padding: 10px;
+  border: 1.5px dashed var(--border2); border-radius: var(--radius-sm);
+  background: transparent; color: var(--text2);
+  font-size: 12px; font-family: var(--font-body);
+  display: flex; align-items: center; justify-content: center; gap: 6px;
+  cursor: pointer; transition: all 0.15s;
+}
+.scan-add-btn:hover { border-color: var(--green-mid); color: var(--green-mid); }
+.scan-go-btn {
+  flex: 1.5; padding: 10px;
+  background: var(--green-mid); border: none; border-radius: var(--radius-sm);
+  color: white; font-size: 13px; font-weight: 600; font-family: var(--font-body);
+  cursor: pointer; transition: background 0.15s;
+  display: flex; align-items: center; justify-content: center; gap: 6px;
+}
+.scan-go-btn:hover { background: var(--green-dark); }
+.scan-go-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+/* AI result rows — editable */
+.ai-med-row {
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border);
+}
+.ai-med-row:last-child { border-bottom: none; }
+.ai-med-row-top {
+  display: flex; align-items: center; gap: 10px; margin-bottom: 6px;
+}
+.ai-med-icon {
+  width: 34px; height: 34px; border-radius: 9px;
+  display: flex; align-items: center; justify-content: center; font-size: 16px;
+  flex-shrink: 0;
+}
+.ai-med-name { font-size: 13px; font-weight: 500; color: var(--text); }
+.ai-med-detail { font-size: 11px; color: var(--text2); margin-top: 2px; }
+.ai-edit-row {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-top: 6px;
+}
+.ai-edit-field { display: flex; flex-direction: column; gap: 3px; }
+.ai-edit-label { font-size: 10px; color: var(--text3); font-weight: 500; letter-spacing: 0.04em; text-transform: uppercase; }
+.ai-edit-input {
+  width: 100%; padding: 7px 10px;
+  background: var(--surface2); border: 1px solid var(--border2);
+  border-radius: 8px; color: var(--text);
+  font-size: 12px; font-family: var(--font-body); outline: none;
+  transition: border-color 0.15s;
+}
+.ai-edit-input:focus { border-color: var(--green-mid); }
+.ai-edit-input.highlight { border-color: var(--orange); background: var(--orange-light); }
+.ai-times-edit { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 5px; }
+.ai-time-chip-edit {
+  display: flex; align-items: center; gap: 4px;
+  background: var(--green-light); border-radius: 20px;
+  padding: 3px 4px 3px 9px; border: 1px solid transparent;
+}
+.ai-time-input {
+  border: none; background: transparent; color: var(--green-dark);
+  font-size: 11px; font-weight: 500; font-family: var(--font-body);
+  width: 52px; outline: none; padding: 0;
+}
+.ai-time-remove {
+  width: 16px; height: 16px; border-radius: 50%; border: none;
+  background: rgba(0,0,0,0.1); color: var(--green-dark);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; font-size: 10px; flex-shrink: 0;
+}
+.add-ai-time-btn {
+  font-size: 11px; color: var(--green-mid); background: transparent;
+  border: 1px dashed rgba(14,138,100,0.4); border-radius: 20px;
+  padding: 3px 9px; cursor: pointer; font-family: var(--font-body);
+}
+.edit-hint {
+  display: flex; align-items: center; gap: 6px;
+  background: var(--blue-light); border-radius: var(--radius-sm);
+  padding: 8px 12px; margin-bottom: 10px;
+  font-size: 11px; color: var(--blue);
+}
+.edit-hint i { font-size: 14px; flex-shrink: 0; }
+
+.confirm-btn {
+  width: 100%; padding: 13px;
+  background: var(--green-mid); color: white;
+  border: none; border-radius: var(--radius-sm);
+  font-size: 14px; font-weight: 600; font-family: var(--font-body);
+  cursor: pointer; margin-top: 12px;
+  transition: background 0.15s;
+  letter-spacing: 0.01em;
+}
+.confirm-btn:hover { background: var(--green-dark); }
+.discard-btn {
+  width: 100%; padding: 11px;
+  background: transparent; color: var(--text2);
+  border: 1px solid var(--border2); border-radius: var(--radius-sm);
+  font-size: 13px; font-family: var(--font-body);
+  cursor: pointer; margin-top: 8px;
+}
+
+.info-card {
+  background: var(--green-light);
+  border: 1px solid rgba(14,138,100,0.15);
+  border-radius: var(--radius-sm);
+  padding: 14px 16px;
+  display: flex; gap: 12px; align-items: flex-start;
+  margin-top: 8px;
+}
+.info-card i { font-size: 18px; color: var(--green-mid); flex-shrink: 0; margin-top: 1px; }
+.info-card p { font-size: 12px; color: var(--text2); line-height: 1.5; }
+
+/* ── HISTORY TAB ── */
+.stat-grid {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 10px; margin-bottom: 20px;
+}
+.stat-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 14px 16px;
+  box-shadow: var(--shadow);
+}
+.stat-val { font-size: 28px; font-weight: 600; color: var(--text); font-family: var(--font-display); }
+.stat-label { font-size: 10px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.06em; margin-top: 2px; }
+.stat-sub { font-size: 11px; color: var(--text2); margin-top: 4px; }
+
+.streak-row { display: flex; gap: 5px; margin-bottom: 20px; }
+.streak-seg {
+  flex: 1; height: 6px; border-radius: 3px;
+  background: var(--border);
+}
+.streak-seg.on { background: var(--green-mid); }
+.streak-seg.today { background: var(--green-mid); box-shadow: 0 0 6px rgba(14,138,100,0.5); }
+
+.week-chart { display: flex; align-items: flex-end; gap: 6px; height: 80px; margin-bottom: 20px; }
+.week-bar-wrap { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; height: 100%; justify-content: flex-end; }
+.week-bar {
+  width: 100%; border-radius: 5px;
+  background: var(--green-mid); min-height: 4px;
+  transition: height 0.4s;
+}
+.week-bar.dim { background: var(--border); }
+.week-label { font-size: 10px; color: var(--text3); }
+
+.cal-header-row { display: grid; grid-template-columns: repeat(7,1fr); gap: 3px; margin-bottom: 5px; }
+.cal-dh { text-align: center; font-size: 10px; color: var(--text3); font-weight: 500; padding: 2px 0; }
+.cal-grid { display: grid; grid-template-columns: repeat(7,1fr); gap: 3px; }
+.cal-cell {
+  aspect-ratio: 1; border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; color: var(--text2); cursor: pointer;
+  transition: background 0.12s;
+  position: relative;
+}
+.cal-cell.today { background: var(--green-mid); color: white; font-weight: 600; }
+.cal-cell.has { color: var(--text); }
+.cal-cell.complete { background: var(--green-light); color: var(--green-dark); font-weight: 500; }
+.cal-cell.other-month { opacity: 0.3; }
+.cal-cell.has::after {
+  content: '';
+  position: absolute; bottom: 3px;
+  width: 4px; height: 4px; border-radius: 50%;
+  background: var(--green-mid);
+}
+.cal-cell.today::after { background: white; }
+.cal-cell.complete::after { background: var(--green-dark); }
+
+/* ── SCHEDULE TAB ── */
+.sched-med-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px;
+  margin-bottom: 10px;
+  display: flex; align-items: center; gap: 12px;
+  box-shadow: var(--shadow);
+}
+.sched-med-info { flex: 1; }
+.sched-med-name { font-size: 14px; font-weight: 500; color: var(--text); }
+.sched-med-dose { font-size: 12px; color: var(--text2); margin-top: 2px; }
+.sched-times { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 7px; }
+.sched-time-chip {
+  font-size: 11px; padding: 3px 9px;
+  background: var(--green-light); color: var(--green-dark);
+  border-radius: 20px; font-weight: 500;
+}
+.del-btn {
+  width: 30px; height: 30px; border-radius: 50%;
+  border: 1px solid var(--border2);
+  background: transparent; color: var(--text3);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; font-size: 15px; flex-shrink: 0;
+  transition: all 0.15s;
+}
+.del-btn:hover { background: var(--red-light); border-color: var(--red); color: var(--red); }
+
+/* ── ADD MED BTN ── */
+.add-ghost-btn {
+  width: 100%;
+  padding: 12px;
+  border: 1.5px dashed var(--border2);
+  border-radius: var(--radius);
+  background: transparent; color: var(--text2);
+  font-size: 13px; font-family: var(--font-body);
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  cursor: pointer; transition: all 0.15s;
+  margin-top: 4px;
+}
+.add-ghost-btn:hover { border-color: var(--green-mid); color: var(--green-mid); }
+
+/* ── MODAL ── */
+.modal-backdrop {
+  position: absolute; inset: 0;
+  background: rgba(0,0,0,0.5);
+  display: flex; align-items: flex-end;
+  z-index: 100; animation: fadein 0.15s;
+}
+@keyframes fadein{from{opacity:0}to{opacity:1}}
+.modal-sheet {
+  width: 100%;
+  background: var(--surface);
+  border-radius: 24px 24px 0 0;
+  padding: 0 20px 40px;
+  animation: slideup 0.25s cubic-bezier(.4,0,.2,1);
+  max-height: 85dvh; overflow-y: auto;
+}
+@keyframes slideup{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.modal-handle {
+  width: 36px; height: 4px; background: var(--border2);
+  border-radius: 2px; margin: 12px auto 20px;
+}
+.modal-title { font-size: 18px; font-weight: 600; margin-bottom: 20px; }
+.form-group { margin-bottom: 16px; }
+.form-label { font-size: 11px; color: var(--text2); font-weight: 500; letter-spacing: 0.04em; text-transform: uppercase; margin-bottom: 6px; display: block; }
+.form-input {
+  width: 100%; padding: 11px 14px;
+  background: var(--surface2); border: 1px solid var(--border2);
+  border-radius: var(--radius-sm); color: var(--text);
+  font-size: 14px; font-family: var(--font-body);
+  outline: none; transition: border-color 0.15s;
+}
+.form-input:focus { border-color: var(--green-mid); }
+.form-row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.color-row { display: flex; gap: 8px; flex-wrap: wrap; }
+.color-dot {
+  width: 28px; height: 28px; border-radius: 50%;
+  cursor: pointer; border: 2px solid transparent;
+  transition: border-color 0.12s;
+}
+.color-dot.sel { border-color: var(--green-mid); }
+.icon-row { display: flex; gap: 8px; flex-wrap: wrap; }
+.icon-opt {
+  width: 34px; height: 34px; border-radius: 9px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; cursor: pointer; background: var(--surface2);
+  border: 1.5px solid transparent; transition: border-color 0.12s;
+}
+.icon-opt.sel { border-color: var(--green-mid); }
+.times-builder { display: flex; flex-direction: column; gap: 8px; }
+.time-entry { display: flex; align-items: center; gap: 8px; }
+.time-entry .form-input { flex: 1; }
+.remove-time {
+  width: 28px; height: 28px; border-radius: 50%; border: none;
+  background: var(--red-light); color: var(--red);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; font-size: 14px; flex-shrink: 0;
+}
+.add-time-btn {
+  background: transparent; border: 1px dashed var(--border2);
+  border-radius: var(--radius-sm); padding: 8px;
+  color: var(--text2); font-size: 12px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center; gap: 6px;
+  width: 100%;
+}
+.modal-actions { display: flex; gap: 10px; margin-top: 20px; }
+.btn-cancel {
+  flex: 1; padding: 12px; background: var(--surface2);
+  border: 1px solid var(--border2); border-radius: var(--radius-sm);
+  color: var(--text2); font-size: 14px; font-family: var(--font-body); cursor: pointer;
+}
+.btn-save {
+  flex: 2; padding: 12px; background: var(--green-mid);
+  border: none; border-radius: var(--radius-sm);
+  color: white; font-size: 14px; font-weight: 600; font-family: var(--font-body); cursor: pointer;
+}
+
+/* ── TOAST ── */
+.toast {
+  position: absolute; top: 16px; left: 50%;
+  transform: translateX(-50%);
+  background: var(--text); color: var(--bg);
+  padding: 10px 18px; border-radius: 30px;
+  font-size: 13px; font-weight: 500;
+  white-space: nowrap; z-index: 200;
+  display: flex; align-items: center; gap: 8px;
+  box-shadow: var(--shadow-lg);
+  animation: toastin 0.2s;
+  pointer-events: none;
+}
+@keyframes toastin{from{transform:translateX(-50%) translateY(-20px);opacity:0}to{transform:translateX(-50%) translateY(0);opacity:1}}
+
+/* ── NOTIF PERMISSION ── */
+.notif-banner {
+  background: var(--orange-light);
+  border: 1px solid rgba(249,115,22,0.2);
+  border-radius: var(--radius-sm);
+  padding: 12px 14px;
+  display: flex; align-items: center; gap: 10px;
+  margin-bottom: 12px; cursor: pointer;
+}
+.notif-banner i { font-size: 18px; color: var(--orange); flex-shrink: 0; }
+.notif-banner p { font-size: 12px; color: var(--text); flex: 1; }
+.notif-banner .nb-action { font-size: 11px; font-weight: 600; color: var(--orange); white-space: nowrap; }
+
+/* ══════════════════════════════════════
+   VITALS MODULE
+══════════════════════════════════════ */
+.vitals-toggle {
+  display: flex; background: var(--surface2);
+  border: 1px solid var(--border); border-radius: var(--radius-sm);
+  padding: 3px; margin-bottom: 16px; gap: 3px;
+}
+.vt-btn {
+  flex: 1; padding: 8px 4px; border: none; border-radius: 7px;
+  background: transparent; font-size: 12px; font-weight: 500;
+  font-family: var(--font-body); color: var(--text2); cursor: pointer;
+  transition: all 0.15s; display: flex; align-items: center; justify-content: center; gap: 5px;
+}
+.vt-btn i { font-size: 15px; }
+.vt-btn.active { background: var(--surface); color: var(--text); box-shadow: var(--shadow); }
+
+.vitals-summary {
+  display: grid; grid-template-columns: 1fr 1fr 1fr;
+  gap: 8px; margin-bottom: 16px;
+}
+.vs-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius-sm); padding: 10px 10px 8px;
+  box-shadow: var(--shadow); text-align: center;
+}
+.vs-val { font-size: 18px; font-weight: 600; color: var(--text); line-height: 1; font-family: var(--font-display); }
+.vs-val.danger { color: var(--red); }
+.vs-val.warn { color: var(--orange); }
+.vs-val.ok { color: var(--green); }
+.vs-unit { font-size: 9px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.06em; margin-top: 2px; }
+.vs-label { font-size: 10px; color: var(--text2); margin-top: 4px; }
+
+.add-vital-btn {
+  width: 100%; padding: 13px;
+  background: var(--green-mid); color: white; border: none;
+  border-radius: var(--radius-sm); font-size: 14px; font-weight: 600;
+  font-family: var(--font-body); cursor: pointer; margin-bottom: 16px;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  transition: background 0.15s;
+}
+.add-vital-btn:hover { background: var(--green-dark); }
+
+.reading-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 14px;
+  margin-bottom: 10px; box-shadow: var(--shadow);
+  display: flex; align-items: flex-start; gap: 12px;
+}
+.reading-icon {
+  width: 40px; height: 40px; border-radius: 11px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px; flex-shrink: 0;
+}
+.reading-icon.bsr { background: #fff7ed; }
+.reading-icon.bp  { background: #fef2f2; }
+.reading-info { flex: 1; min-width: 0; }
+.reading-val { font-size: 20px; font-weight: 600; color: var(--text); line-height: 1; font-family: var(--font-display); }
+.reading-val .unit { font-size: 11px; font-weight: 400; color: var(--text2); margin-left: 3px; font-family: var(--font-body); }
+.reading-badge {
+  display: inline-flex; align-items: center; gap: 4px;
+  font-size: 10px; font-weight: 600; padding: 2px 8px;
+  border-radius: 20px; margin-top: 4px; letter-spacing: 0.03em;
+}
+.badge-low    { background: #eff6ff; color: #1d4ed8; }
+.badge-normal { background: #e0f5ec; color: var(--green-dark); }
+.badge-high   { background: #fff7ed; color: #b45309; }
+.badge-danger { background: #fef2f2; color: #b91c1c; }
+.reading-meta { font-size: 11px; color: var(--text3); margin-top: 5px; }
+.reading-notes-text { font-size: 11px; color: var(--text2); font-style: italic; margin-top: 3px; }
+.reading-del {
+  width: 28px; height: 28px; border-radius: 50%;
+  border: 1px solid var(--border2); background: transparent;
+  color: var(--text3); display: flex; align-items: center; justify-content: center;
+  cursor: pointer; font-size: 13px; flex-shrink: 0; transition: all 0.15s;
+}
+.reading-del:hover { background: var(--red-light); border-color: var(--red); color: var(--red); }
+
+.mini-chart {
+  display: flex; align-items: flex-end; gap: 3px;
+  height: 36px; margin-top: 8px; margin-bottom: 4px;
+}
+.mini-bar {
+  flex: 1; border-radius: 3px 3px 0 0; min-height: 3px;
+  transition: height 0.3s;
+}
+
+/* Vitals form overrides */
+.vital-form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.form-unit-wrap { position: relative; }
+.form-unit-label {
+  position: absolute; right: 10px; top: 50%; transform: translateY(-50%);
+  font-size: 11px; color: var(--text3); pointer-events: none;
+}
+.range-guide {
+  font-size: 10px; color: var(--text3); margin-top: 4px; letter-spacing: 0.02em;
+}
+
+/* ── EXPORT / DOWNLOAD ── */
+.export-bar {
+  display: flex; align-items: center; gap: 8px;
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius-sm); padding: 10px 12px;
+  margin-bottom: 14px; box-shadow: var(--shadow);
+}
+.export-bar-label { font-size: 12px; color: var(--text2); flex: 1; }
+.export-btn {
+  display: flex; align-items: center; gap: 5px;
+  padding: 7px 13px; border-radius: 8px; border: none;
+  font-size: 12px; font-weight: 600; font-family: var(--font-body);
+  cursor: pointer; transition: all 0.15s; white-space: nowrap;
+}
+.export-btn.csv { background: var(--green-light); color: var(--green-dark); }
+.export-btn.csv:hover { background: var(--green-mid); color: white; }
+.export-btn.pdf { background: var(--blue-light); color: #1d4ed8; }
+.export-btn.pdf:hover { background: #3b82f6; color: white; }
+.export-btn i { font-size: 14px; }
+
+/* date range picker inside modal */
+.date-range-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+.export-preview {
+  background: var(--surface2); border: 1px solid var(--border);
+  border-radius: var(--radius-sm); padding: 10px 14px;
+  font-size: 12px; color: var(--text2); margin-bottom: 14px;
+  min-height: 36px;
+}
+.export-preview strong { color: var(--text); font-weight: 600; }
+
+/* Print styles — hidden in normal view, shown only on print */
+#print-area { display: none; }
+@media print {
+  body > * { display: none !important; }
+  #print-area {
+    display: block !important;
+    font-family: 'DM Sans', sans-serif;
+    color: #1a1f1c; padding: 24px;
+  }
+  #print-area h1 { font-size: 20px; margin-bottom: 4px; }
+  #print-area .print-meta { font-size: 11px; color: #666; margin-bottom: 20px; }
+  #print-area table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  #print-area th { background: #e0f5ec; padding: 8px 10px; text-align: left; font-weight: 600; border-bottom: 1px solid #ccc; }
+  #print-area td { padding: 7px 10px; border-bottom: 1px solid #eee; }
+  #print-area tr:nth-child(even) td { background: #f8faf7; }
+  #print-area .badge { display: inline-block; padding: 2px 7px; border-radius: 10px; font-size: 10px; font-weight: 600; }
+  #print-area .badge-normal { background: #e0f5ec; color: #075e46; }
+  #print-area .badge-low    { background: #eff6ff; color: #1d4ed8; }
+  #print-area .badge-high   { background: #fff7ed; color: #b45309; }
+  #print-area .badge-danger { background: #fef2f2; color: #b91c1c; }
+}
+
+/* ── AUTH SCREEN ── */
+.auth-screen {
+  position: fixed; inset: 0;
+  background: var(--green-mid);
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  padding: 32px 28px; z-index: 500;
+}
+.auth-logo {
+  font-family: var(--font-display);
+  font-size: 42px; color: white;
+  letter-spacing: -1px; margin-bottom: 6px;
+}
+.auth-tagline { font-size: 13px; color: rgba(255,255,255,0.65); margin-bottom: 48px; }
+.auth-card {
+  width: 100%; max-width: 360px;
+  background: var(--surface); border-radius: 24px;
+  padding: 28px 24px; box-shadow: var(--shadow-lg);
+}
+.auth-card-title { font-size: 17px; font-weight: 600; color: var(--text); margin-bottom: 4px; }
+.auth-card-sub   { font-size: 13px; color: var(--text2); margin-bottom: 24px; }
+.auth-input-wrap { position: relative; margin-bottom: 14px; }
+.auth-input-icon {
+  position: absolute; left: 12px; top: 50%; transform: translateY(-50%);
+  font-size: 18px; color: var(--text3); pointer-events: none;
+}
+.auth-input {
+  width: 100%; padding: 12px 14px 12px 40px;
+  background: var(--surface2); border: 1px solid var(--border2);
+  border-radius: var(--radius-sm); color: var(--text);
+  font-size: 16px; font-family: var(--font-body); outline: none;
+  transition: border-color 0.15s; letter-spacing: 0.04em;
+}
+.auth-input:focus { border-color: var(--green-mid); }
+.auth-input.error { border-color: var(--red); }
+
+/* PIN dots */
+.pin-dots {
+  display: flex; justify-content: center; gap: 14px;
+  margin: 10px 0 20px; height: 16px; align-items: center;
+}
+.pin-dot {
+  width: 14px; height: 14px; border-radius: 50%;
+  border: 2px solid var(--border2); background: transparent;
+  transition: all 0.15s;
+}
+.pin-dot.filled { background: var(--green-mid); border-color: var(--green-mid); }
+.pin-dot.error  { background: var(--red); border-color: var(--red); }
+
+/* PIN keypad */
+.pin-pad {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 10px; margin-bottom: 16px;
+}
+.pin-key {
+  aspect-ratio: 1; border-radius: 50%;
+  border: 1px solid var(--border2);
+  background: var(--surface2); color: var(--text);
+  font-size: 20px; font-weight: 500; font-family: var(--font-body);
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  transition: all 0.1s; user-select: none;
+}
+.pin-key:active { transform: scale(0.92); background: var(--green-light); }
+.pin-key.del { font-size: 18px; }
+.pin-key.empty { border: none; background: transparent; cursor: default; }
+
+.auth-btn {
+  width: 100%; padding: 13px;
+  background: var(--green-mid); color: white; border: none;
+  border-radius: var(--radius-sm); font-size: 15px; font-weight: 600;
+  font-family: var(--font-body); cursor: pointer; transition: background 0.15s;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+}
+.auth-btn:hover { background: var(--green-dark); }
+.auth-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.auth-back {
+  background: transparent; border: none; color: rgba(255,255,255,0.75);
+  font-size: 13px; font-family: var(--font-body); cursor: pointer;
+  margin-top: 20px; text-decoration: underline;
+}
+.auth-error {
+  font-size: 12px; color: var(--red); text-align: center;
+  margin-bottom: 10px; min-height: 18px;
+}
+.auth-loading {
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  color: var(--text2); font-size: 13px; padding: 12px 0;
+}
+.auth-loading i { font-size: 18px; animation: spin 1s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* User badge in header */
+.user-badge {
+  display: flex; align-items: center; gap: 8px;
+  background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 20px; padding: 5px 12px 5px 8px; cursor: pointer;
+  transition: background 0.15s;
+}
+.user-badge:hover { background: rgba(255,255,255,0.25); }
+.user-avatar {
+  width: 24px; height: 24px; border-radius: 50%;
+  background: rgba(255,255,255,0.3);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 700; color: white;
+}
+.user-name { font-size: 12px; color: white; font-weight: 500; }
+.logout-confirm {
+  position: absolute; top: 100%; right: 0; margin-top: 6px;
+  background: var(--surface); border: 1px solid var(--border2);
+  border-radius: var(--radius-sm); padding: 8px;
+  box-shadow: var(--shadow-lg); z-index: 50; min-width: 140px;
+}
+.logout-btn {
+  width: 100%; padding: 8px 12px; background: transparent;
+  border: none; border-radius: 6px; color: var(--red);
+  font-size: 13px; font-family: var(--font-body); cursor: pointer;
+  display: flex; align-items: center; gap: 8px; text-align: left;
+}
+.logout-btn:hover { background: var(--red-light); }
+</style>
+</head>
+<body>
+<div id="print-area"></div>
+<div id="app">
+  <!-- Rendered by JS -->
+</div>
+
+<script type="module">
+// ═══════════════════════════════════════════════════
+//  FIREBASE SETUP
+// ═══════════════════════════════════════════════════
+import { initializeApp }                          from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getFirestore, doc, getDoc, setDoc,
+         collection, getDocs, deleteDoc,
+         writeBatch }                             from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyA-orPauGM9Jsog9l7jWa0cwJe05RYFQcU",
+  authDomain: "medtrack-1aefa.firebaseapp.com",
+  projectId: "medtrack-1aefa",
+  storageBucket: "medtrack-1aefa.firebasestorage.app",
+  messagingSenderId: "264694390617",
+  appId: "1:264694390617:web:cf0d6654285a8f65baf648"
+};
+
+const fbApp = initializeApp(firebaseConfig);
+const db    = getFirestore(fbApp);
+
+// ── simple PIN hash (SHA-256) ──
+async function hashPin(pin) {
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(pin));
+  return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
+}
+
+// ── Firestore helpers ──
+// User doc:   users/{phone}  → { pinHash, createdAt }
+// Data doc:   users/{phone}/data/main → { meds, history, readings, notifAsked }
+function userRef(phone)     { return doc(db, 'users', phone); }
+function dataRef(phone)     { return doc(db, 'users', phone, 'data', 'main'); }
+
+async function fbGetUser(phone) {
+  const snap = await getDoc(userRef(phone));
+  return snap.exists() ? snap.data() : null;
+}
+async function fbCreateUser(phone, pinHash) {
+  await setDoc(userRef(phone), { pinHash, createdAt: Date.now() });
+}
+async function fbLoadData(phone) {
+  const snap = await getDoc(dataRef(phone));
+  return snap.exists() ? snap.data() : null;
+}
+async function fbSaveData(phone, data) {
+  // strip un-serialisable stuff (File objects in pageQueue live only in ui)
+  await setDoc(dataRef(phone), {
+    meds: data.meds || [],
+    history: data.history || {},
+    readings: data.readings || [],
+    notifAsked: data.notifAsked || false,
+  });
+}
+
+// ═══════════════════════════════════════════════════
+//  CONSTANTS & HELPERS
+// ═══════════════════════════════════════════════════
+const COLORS = ['#e0f5ec','#fde8e8','#eff6ff','#fff7ed','#f5f3ff','#fefce8','#f0fdf4','#fff1f2'];
+const ICONS = ['💊','🔵','🟡','🔴','🟢','⚪','🩺','💉','🧴','🫀'];
+const DAYS = ['S','M','T','W','T','F','S'];
+const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+
+function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2); }
+function pad(n) { return n.toString().padStart(2,'0'); }
+function timeToMin(t) { const [h,m]=t.split(':').map(Number); return h*60+m; }
+function fmt12(t) { const [h,m]=t.split(':').map(Number); const ap=h>=12?'PM':'AM'; return `${h%12||12}:${pad(m)} ${ap}`; }
+function nowStr() { const n=new Date(); return `${pad(n.getHours())}:${pad(n.getMinutes())}`; }
+function todayKey() { const n=new Date(); return `${n.getFullYear()}-${pad(n.getMonth()+1)}-${pad(n.getDate())}`; }
+
+function doseStatus(timeStr) {
+  const nm = timeToMin(nowStr());
+  const dm = timeToMin(timeStr);
+  const diff = dm - nm;
+  if (diff < -15) return 'overdue';
+  if (diff <= 5) return 'due-soon';
+  return 'upcoming';
+}
+
+// ═══════════════════════════════════════════════════
+//  STATE (localStorage-backed)
+// ═══════════════════════════════════════════════════
+let state = {
+  meds: [],
+  history: {},     // { "YYYY-MM-DD": { "medId-time": true } }
+  notifAsked: false,
+  readings: [],    // [{ id, type:'bsr'|'bp', datetime, bsr, systolic, diastolic, notes }]
+};
+
+function freshState() {
+  return {
+    meds: [],
+    history: {},
+    readings: [],
+    notifAsked: false,
+  };
+}
+
+function loadState() {
+  // No-op — state is loaded from Firestore after login
+  state = freshState();
+}
+
+async function saveState() {
+  if (currentUser) {
+    try { await fbSaveData(currentUser.phone, state); } catch(e) { console.warn('Save failed', e); }
+  }
+}
+
+// ═══════════════════════════════════════════════════
+//  NOTIFICATIONS
+// ═══════════════════════════════════════════════════
+let scheduledNotifs = {};
+function scheduleNotifications() {
+  // Clear old
+  Object.values(scheduledNotifs).forEach(clearTimeout);
+  scheduledNotifs = {};
+  if (Notification.permission !== 'granted') return;
+
+  const now = new Date();
+  state.meds.forEach(med => {
+    med.times.forEach(t => {
+      const key = `${med.id}-${t}`;
+      const done = (state.history[todayKey()] || {})[key];
+      if (done) return;
+      const [h, m] = t.split(':').map(Number);
+      const target = new Date(); target.setHours(h, m-5, 0, 0);
+      const ms = target - now;
+      if (ms > 0 && ms < 24*60*60*1000) {
+        scheduledNotifs[key] = setTimeout(() => {
+          new Notification('MedTrack Reminder 💊', {
+            body: `Time to take ${med.name} (${med.dose}) in 5 minutes`,
+            icon: '💊',
+            tag: key,
+          });
+        }, ms);
+      }
+    });
+  });
+}
+
+async function requestNotifications() {
+  if ('Notification' in window) {
+    const perm = await Notification.requestPermission();
+    state.notifAsked = true;
+    saveState();
+    if (perm === 'granted') scheduleNotifications();
+    render();
+  }
+}
+
+// ═══════════════════════════════════════════════════
+//  UI STATE
+// ═══════════════════════════════════════════════════
+let ui = {
+  tab: 'today',
+  toast: null,
+  toastTimer: null,
+  modal: null,
+  // scan states: idle | queued | scanning | result
+  uploadState: 'idle',
+  // queue: [{ id, file, name, dataUrl, mime, status: 'pending'|'scanning'|'done'|'error', found:0 }]
+  pageQueue: [],
+  aiResult: null,  // flat array of editable med objects
+  editMed: null,
+  newMed: { name:'', dose:'', times:['08:00'], notes:'', color: COLORS[0], icon: ICONS[0] },
+  vitalsView: 'bsr',   // 'bsr' | 'bp'
+  vitalForm: null,     // null | { type, datetime, bsr, systolic, diastolic, notes }
+  exportModal: null,   // null | { type, dateFrom, dateTo }
+  // auth
+  authScreen: 'phone',  // 'phone' | 'pin-login' | 'pin-setup' | 'pin-confirm'
+  authPhone: '',
+  authPin: '',
+  authPinConfirm: '',
+  authError: '',
+  authLoading: false,
+  authUserExists: false,
+  showLogout: false,
+};
+
+// ── Current logged-in user ──
+let currentUser = null;   // { phone } or null
+
+function showToast(msg, iconName='ti-check') {
+  if (ui.toastTimer) clearTimeout(ui.toastTimer);
+  ui.toast = { msg, icon: iconName };
+  ui.toastTimer = setTimeout(() => { ui.toast = null; render(); }, 3000);
+}
+
+// ═══════════════════════════════════════════════════
+//  TOGGLE DONE
+// ═══════════════════════════════════════════════════
+function toggleDone(key, medName) {
+  const tk = todayKey();
+  if (!state.history[tk]) state.history[tk] = {};
+  const was = state.history[tk][key];
+  state.history[tk][key] = !was;
+  saveState();
+  if (!was) showToast(`${medName} marked as taken`, 'ti-pill');
+  render();
+}
+
+// ═══════════════════════════════════════════════════
+//  FILE UPLOAD → QUEUE
+// ═══════════════════════════════════════════════════
+function readFileAsDataUrl(file) {
+  return new Promise((res, rej) => {
+    const r = new FileReader();
+    r.onload = ev => res(ev.target.result);
+    r.onerror = rej;
+    r.readAsDataURL(file);
+  });
+}
+
+async function handleFileSelect(e) {
+  const files = Array.from(e.target.files || []);
+  if (!files.length) return;
+  for (const file of files) {
+    const dataUrl = await readFileAsDataUrl(file);
+    ui.pageQueue.push({
+      id: uid(),
+      file,
+      name: file.name || `Page ${ui.pageQueue.length + 1}`,
+      dataUrl,
+      mime: file.type || 'image/jpeg',
+      status: 'pending',
+      found: 0,
+    });
+  }
+  ui.uploadState = 'queued';
+  e.target.value = '';
+  render();
+}
+
+async function scanPage(page) {
+  const b64 = page.dataUrl.split(',')[1];
+  page.status = 'scanning'; render();
+  try {
+    const resp = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1200,
+        messages: [{
+          role: 'user',
+          content: [
+            { type: 'image', source: { type: 'base64', media_type: page.mime, data: b64 } },
+            { type: 'text', text: 'Extract all medicines from this prescription or schedule image. Return ONLY a valid JSON array, no markdown, no backticks, no extra text. Format: [{"name":"Medicine Name","dose":"dose amount","times":["HH:MM"],"notes":"instructions","category":"condition"}]. Use 24-hour time. List each daily dose time separately. If no medicine schedule found, return [].' }
+          ]
+        }]
+      })
+    });
+    const data = await resp.json();
+    const raw = (data.content||[]).find(b=>b.type==='text')?.text || '[]';
+    let parsed = [];
+    try { parsed = JSON.parse(raw.replace(/```json|```/g,'').trim()); } catch(e2){}
+    page.status = 'done';
+    page.found = parsed.length;
+    return parsed;
+  } catch(err) {
+    page.status = 'error';
+    return [];
+  }
+}
+
+async function startScan() {
+  const pending = ui.pageQueue.filter(p => p.status === 'pending' || p.status === 'error');
+  if (!pending.length) return;
+  ui.uploadState = 'scanning';
+  render();
+  let allMeds = [];
+  for (const page of pending) {
+    const meds = await scanPage(page);
+    allMeds.push(...meds);
+    render();
+  }
+  if (allMeds.length > 0) {
+    // De-duplicate by name (case-insensitive)
+    const seen = new Set();
+    const deduped = allMeds.filter(m => {
+      const key = (m.name||'').toLowerCase().trim();
+      if (seen.has(key)) return false;
+      seen.add(key); return true;
+    });
+    // Make editable copies
+    ui.aiResult = deduped.map((m, i) => ({
+      _id: uid(),
+      name: m.name || 'Medicine',
+      dose: m.dose || '',
+      times: Array.isArray(m.times) && m.times.length ? [...m.times] : ['08:00'],
+      notes: m.notes || '',
+      category: m.category || '',
+      color: COLORS[i % COLORS.length],
+      icon: ICONS[i % ICONS.length],
+    }));
+    ui.uploadState = 'result';
+  } else {
+    ui.uploadState = 'queued';
+    showToast('No medicines detected — check image quality', 'ti-alert-circle');
+  }
+  render();
+}
+
+// ── Editable AI result mutations ──
+function updateAiMed(id, field, value) {
+  const m = ui.aiResult.find(x => x._id === id);
+  if (m) m[field] = value;
+}
+function addAiTime(id) {
+  const m = ui.aiResult.find(x => x._id === id);
+  if (m) { m.times.push('12:00'); render(); }
+}
+function removeAiTime(id, idx) {
+  const m = ui.aiResult.find(x => x._id === id);
+  if (m && m.times.length > 1) { m.times.splice(idx, 1); render(); }
+}
+function removeAiMed(id) {
+  ui.aiResult = ui.aiResult.filter(x => x._id !== id);
+  if (!ui.aiResult.length) { ui.uploadState = 'queued'; }
+  render();
+}
+
+function confirmAI() {
+  const added = ui.aiResult.map(m => ({
+    id: uid(),
+    name: (m.name || 'Medicine').trim(),
+    dose: (m.dose || '').trim(),
+    times: m.times.filter(Boolean),
+    notes: (m.notes || '').trim(),
+    category: (m.category || '').trim(),
+    color: m.color,
+    icon: m.icon,
+  }));
+  state.meds.push(...added);
+  saveState();
+  scheduleNotifications();
+  ui.aiResult = null;
+  ui.uploadState = 'idle';
+  ui.pageQueue = [];
+  showToast(`${added.length} medicine(s) added to schedule`, 'ti-check');
+  ui.tab = 'today';
+  render();
+}
+
+// ═══════════════════════════════════════════════════
+//  ADD / DELETE MED
+// ═══════════════════════════════════════════════════
+function openAddModal() {
+  ui.modal = 'add-med';
+  ui.editMed = null;
+  ui.newMed = { name:'', dose:'', times:['08:00'], notes:'', color: COLORS[0], icon: ICONS[0] };
+  render();
+}
+function closeModal() { ui.modal = null; render(); }
+
+function saveMed() {
+  const m = ui.newMed;
+  if (!m.name.trim()) { showToast('Please enter a medicine name', 'ti-alert-circle'); return; }
+  state.meds.push({
+    id: uid(),
+    name: m.name.trim(),
+    dose: m.dose.trim(),
+    times: m.times.filter(Boolean),
+    notes: m.notes.trim(),
+    category: '',
+    color: m.color,
+    icon: m.icon,
+  });
+  saveState();
+  scheduleNotifications();
+  closeModal();
+  showToast(`${m.name} added`, 'ti-pill');
+}
+
+function deleteMed(id) {
+  if (!confirm('Remove this medicine from your schedule?')) return;
+  state.meds = state.meds.filter(m => m.id !== id);
+  saveState();
+  scheduleNotifications();
+  showToast('Medicine removed', 'ti-trash');
+  render();
+}
+
+// ═══════════════════════════════════════════════════
+//  RENDER ENGINE (vanilla DOM)
+// ═══════════════════════════════════════════════════
+function el(tag, props={}, ...children) {
+  const e = document.createElement(tag);
+  Object.entries(props).forEach(([k, v]) => {
+    if (k === 'class') e.className = v;
+    else if (k === 'style' && typeof v === 'object') Object.assign(e.style, v);
+    else if (k.startsWith('on')) e.addEventListener(k.slice(2).toLowerCase(), v);
+    else e.setAttribute(k, v);
+  });
+  children.flat(Infinity).forEach(c => {
+    if (c === null || c === undefined) return;
+    e.appendChild(typeof c === 'string' ? document.createTextNode(c) : c);
+  });
+  return e;
+}
+function icon(name, extra='') { const i=document.createElement('i'); i.className=`ti ti-${name}${extra?' '+extra:''}`; i.setAttribute('aria-hidden','true'); return i; }
+function text(s) { return document.createTextNode(s); }
+
+function renderHeader() {
+  const today = new Date();
+  const tk = todayKey();
+  const allDoses = state.meds.flatMap(m => m.times.map(t => `${m.id}-${t}`));
+  const doneCount = allDoses.filter(k => (state.history[tk]||{})[k]).length;
+  const total = allDoses.length;
+  const pct = total ? Math.round(doneCount/total*100) : 0;
+
+  const h = el('div', {class:'header'});
+  const top = el('div', {class:'header-top'});
+  const brand = el('div', {class:'header-brand'});
+  brand.appendChild(el('div', {class:'brand-name'}, 'MedTrack'));
+  brand.appendChild(el('div', {class:'brand-date'}, today.toLocaleDateString('en-GB', {weekday:'long', day:'numeric', month:'long'})));
+  top.appendChild(brand);
+  // User badge + logout
+  const badgeWrap = el('div',{style:{position:'relative'}});
+  const badge = el('div',{class:'user-badge', onclick:()=>{ui.showLogout=!ui.showLogout;render();}});
+  const av = el('div',{class:'user-avatar'}, (currentUser?.phone||'?').slice(-2));
+  badge.appendChild(av);
+  badge.appendChild(el('div',{class:'user-name'}, currentUser?.phone ? '+'+currentUser.phone.replace(/^0/,'92').slice(0,4)+'…' : ''));
+  badgeWrap.appendChild(badge);
+  if (ui.showLogout) {
+    const lc = el('div',{class:'logout-confirm'});
+    const lb = el('button',{class:'logout-btn', onclick:logout});
+    lb.appendChild(icon('logout')); lb.appendChild(el('span',{},'Sign out'));
+    lc.appendChild(lb);
+    badgeWrap.appendChild(lc);
+  }
+  top.appendChild(badgeWrap);
+  h.appendChild(top);
+
+  const stats = el('div', {class:'header-stats'});
+  const s1 = el('div', {class:'hstat'});
+  s1.appendChild(el('div', {class:'hstat-val'}, `${doneCount}/${total}`));
+  s1.appendChild(el('div', {class:'hstat-label'}, 'Doses Today'));
+  const s2 = el('div', {class:'hstat'});
+  s2.appendChild(el('div', {class:'hstat-val'}, `${state.meds.length}`));
+  s2.appendChild(el('div', {class:'hstat-label'}, 'Medicines'));
+  const s3 = el('div', {class:'hstat'});
+  s3.appendChild(el('div', {class:'hstat-val'}, `${pct}%`));
+  s3.appendChild(el('div', {class:'hstat-label'}, 'Adherence'));
+  stats.appendChild(s1); stats.appendChild(s2); stats.appendChild(s3);
+  h.appendChild(stats);
+
+  const pr = el('div', {class:'progress-row'});
+  const pt = el('div', {class:'progress-track'});
+  const pf = el('div', {class:'progress-fill', style:{width:`${pct}%`}});
+  pt.appendChild(pf); pr.appendChild(pt);
+  pr.appendChild(el('div', {class:'progress-pct'}, `${pct}%`));
+  h.appendChild(pr);
+  return h;
+}
+
+function renderTabs() {
+  const t = el('div', {class:'tabs'});
+  [['today','calendar-today','Today'],['schedule','pill','Schedule'],['vitals','heart-rate-monitor','Vitals'],['scan','camera','Scan'],['history','chart-bar','History']].forEach(([id,ic,lb])=>{
+    const tab = el('div', {class:`tab${ui.tab===id?' active':''}`, onclick:()=>{ui.tab=id;render();}});
+    tab.appendChild(icon(ic)); tab.appendChild(text(lb));
+    t.appendChild(tab);
+  });
+  return t;
+}
+
+function renderToday() {
+  const wrap = el('div',{});
+  const tk = todayKey();
+  const todayDone = state.history[tk] || {};
+
+  // Notification banner
+  if ('Notification' in window && Notification.permission === 'default' && !state.notifAsked) {
+    const nb = el('div',{class:'notif-banner', onclick: requestNotifications});
+    nb.appendChild(icon('bell-ringing'));
+    const np = el('p',{}, 'Enable notifications to get 5-minute reminders before each dose.');
+    nb.appendChild(np);
+    nb.appendChild(el('span',{class:'nb-action'}, 'Enable →'));
+    wrap.appendChild(nb);
+  }
+
+  const allDoses = state.meds.flatMap(m => m.times.map(t=>({...m, time:t, key:`${m.id}-${t}`})));
+  allDoses.sort((a,b)=>timeToMin(a.time)-timeToMin(b.time));
+
+  if (!allDoses.length) {
+    const empty = el('div',{class:'empty'});
+    empty.appendChild(icon('pill-off'));
+    empty.appendChild(el('p',{},'No medicines scheduled'));
+    empty.appendChild(el('small',{},'Tap + to add your first medicine, or scan a prescription'));
+    wrap.appendChild(empty);
+  } else {
+    ['overdue','due-soon','upcoming'].forEach(group => {
+      const items = allDoses.filter(d => !todayDone[d.key] && doseStatus(d.time) === group);
+      if (!items.length) return;
+      const labels = {overdue:'Overdue', 'due-soon':'Due soon', upcoming:'Upcoming'};
+      const lbl = el('p',{class:'sec-label'}, labels[group]);
+      if (group==='overdue') lbl.style.color='var(--red)';
+      if (group==='due-soon') lbl.style.color='var(--orange)';
+      wrap.appendChild(lbl);
+      items.forEach(d => wrap.appendChild(renderDoseCard(d, todayDone, group)));
+    });
+
+    // Done
+    const doneItems = allDoses.filter(d => todayDone[d.key]);
+    if (doneItems.length) {
+      wrap.appendChild(el('p',{class:'sec-label', style:{marginTop:'20px'}}, 'Completed'));
+      doneItems.forEach(d => wrap.appendChild(renderDoseCard(d, todayDone, 'done')));
+    }
+  }
+
+  const addBtn = el('button',{class:'add-ghost-btn', onclick:openAddModal});
+  addBtn.appendChild(icon('plus')); addBtn.appendChild(text('Add medicine manually'));
+  wrap.appendChild(addBtn);
+  return wrap;
+}
+
+function renderDoseCard(d, todayDone, group) {
+  const isDone = !!todayDone[d.key];
+  const card = el('div', {class:`med-card${isDone?' done':''}`, onclick:()=>toggleDone(d.key, d.name)});
+
+  if (group === 'due-soon') card.appendChild(el('div',{class:'alert-dot'}));
+
+  const ico = el('div',{class:'med-icon',style:{background:d.color}}, d.icon);
+  card.appendChild(ico);
+
+  const info = el('div',{class:'med-info'});
+  info.appendChild(el('div',{class:'med-name'}, d.name));
+  info.appendChild(el('div',{class:'med-dose'}, `${d.dose}${d.category?' · '+d.category:''}`));
+  if (d.notes) info.appendChild(el('div',{class:'med-note'}, d.notes));
+  card.appendChild(info);
+
+  const right = el('div',{class:'med-right'});
+  const chipClass = isDone ? 'time-chip done' : `time-chip ${group}`;
+  right.appendChild(el('span',{class:chipClass}, fmt12(d.time)));
+
+  const cb = el('button',{class:`check-btn${isDone?' checked':''}`, 'aria-label':'Mark taken',
+    onclick:(e)=>{e.stopPropagation();toggleDone(d.key, d.name);}});
+  cb.appendChild(icon('check'));
+  right.appendChild(cb);
+  card.appendChild(right);
+  return card;
+}
+
+function renderSchedule() {
+  const wrap = el('div',{});
+  wrap.appendChild(el('p',{class:'sec-label'}, 'Your medicines'));
+  if (!state.meds.length) {
+    const empty = el('div',{class:'empty'});
+    empty.appendChild(icon('pill-off'));
+    empty.appendChild(el('p',{},'No medicines added yet'));
+    wrap.appendChild(empty);
+  } else {
+    state.meds.forEach(m => {
+      const card = el('div',{class:'sched-med-card'});
+      card.appendChild(el('div',{class:'med-icon',style:{background:m.color}}, m.icon));
+      const info = el('div',{class:'sched-med-info'});
+      info.appendChild(el('div',{class:'sched-med-name'}, m.name));
+      info.appendChild(el('div',{class:'sched-med-dose'}, `${m.dose}${m.notes?' · '+m.notes:''}`));
+      const times = el('div',{class:'sched-times'});
+      m.times.forEach(t => times.appendChild(el('span',{class:'sched-time-chip'}, fmt12(t))));
+      info.appendChild(times);
+      card.appendChild(info);
+      const db = el('button',{class:'del-btn','aria-label':'Remove', onclick:()=>deleteMed(m.id)});
+      db.appendChild(icon('trash'));
+      card.appendChild(db);
+      wrap.appendChild(card);
+    });
+  }
+  const addBtn = el('button',{class:'add-ghost-btn', onclick:openAddModal});
+  addBtn.appendChild(icon('plus')); addBtn.appendChild(text('Add medicine'));
+  wrap.appendChild(addBtn);
+  return wrap;
+}
+
+function renderScan() {
+  const wrap = el('div',{});
+  wrap.appendChild(el('p',{class:'sec-label'}, 'Scan prescription or schedule'));
+
+  const st = ui.uploadState;
+
+  // ── IDLE: show upload zone ──
+  if (st === 'idle') {
+    const zone = el('div',{class:'upload-zone', onclick:()=>document.getElementById('file-in').click()});
+    zone.appendChild(icon('camera-plus'));
+    zone.appendChild(el('div',{class:'uz-title'}, 'Upload prescription photo(s)'));
+    zone.appendChild(el('div',{class:'uz-sub'}, 'Select one or multiple pages — printed or handwritten'));
+    wrap.appendChild(zone);
+    const inp = el('input',{type:'file',id:'file-in',accept:'image/*',multiple:'true',onchange:handleFileSelect,style:{display:'none'}});
+    wrap.appendChild(inp);
+  }
+
+  // ── QUEUED / SCANNING: show page list + actions ──
+  if (st === 'queued' || st === 'scanning') {
+    // Page queue
+    const queue = el('div',{class:'page-queue'});
+    ui.pageQueue.forEach(page => {
+      const item = el('div',{class:'page-item'});
+      const thumb = el('img',{class:'page-thumb',src:page.dataUrl,alt:page.name});
+      item.appendChild(thumb);
+      const info = el('div',{class:'page-info'});
+      info.appendChild(el('div',{class:'page-name'}, page.name));
+      const statusMap = {pending:'Ready to scan', scanning:'Scanning…', done:`Found ${page.found} medicine(s)`, error:'Scan failed — will retry'};
+      const statusClass = {pending:'',scanning:'scanning',done:'done',error:'error'};
+      const sl = el('div',{class:`page-status ${statusClass[page.status]}`}, statusMap[page.status]||'');
+      info.appendChild(sl);
+      item.appendChild(info);
+      if (page.status !== 'scanning') {
+        const rm = el('button',{class:'page-remove','aria-label':'Remove page',onclick:()=>{
+          ui.pageQueue = ui.pageQueue.filter(p=>p.id!==page.id);
+          if(!ui.pageQueue.length) ui.uploadState='idle';
+          render();
+        }});
+        rm.appendChild(icon('x')); item.appendChild(rm);
+      }
+      queue.appendChild(item);
+    });
+    wrap.appendChild(queue);
+
+    // Actions row
+    const actions = el('div',{class:'scan-actions'});
+    // Add more pages
+    const addMore = el('button',{class:'scan-add-btn',onclick:()=>document.getElementById('file-in2').click()});
+    addMore.appendChild(icon('plus')); addMore.appendChild(el('span',{},' Add pages'));
+    actions.appendChild(addMore);
+    const inp2 = el('input',{type:'file',id:'file-in2',accept:'image/*',multiple:'true',onchange:handleFileSelect,style:{display:'none'}});
+    wrap.appendChild(inp2);
+    // Scan button
+    const canScan = ui.pageQueue.some(p=>p.status==='pending'||p.status==='error');
+    const goBtn = el('button',{class:'scan-go-btn'});
+    if (st === 'scanning') {
+      goBtn.setAttribute('disabled','true');
+      goBtn.appendChild(el('span',{},'Scanning…'));
+    } else {
+      goBtn.onclick = startScan;
+      goBtn.appendChild(icon('sparkles'));
+      goBtn.appendChild(el('span',{},` Scan ${ui.pageQueue.length} page${ui.pageQueue.length!==1?'s':''}`));
+    }
+    actions.appendChild(goBtn);
+    wrap.appendChild(actions);
+
+    if (st === 'scanning') {
+      const dots = el('div',{class:'ai-thinking-dots', style:{marginBottom:'12px'}});
+      [0,1,2].forEach(()=>{ dots.appendChild(el('div',{class:'ai-dot'})); });
+      const hint = el('p',{style:{textAlign:'center',fontSize:'12px',color:'var(--text2)',marginBottom:'16px'}}, 'AI is reading your pages…');
+      wrap.appendChild(dots); wrap.appendChild(hint);
+    }
+  }
+
+  // ── RESULT: editable medicine list ──
+  if (st === 'result' && ui.aiResult) {
+    const totalPages = ui.pageQueue.length;
+    const box = el('div',{class:'ai-box'});
+    const hdr = el('div',{class:'ai-box-header'});
+    hdr.appendChild(icon('sparkles'));
+    hdr.appendChild(el('span',{},`Found ${ui.aiResult.length} medicine(s) across ${totalPages} page${totalPages!==1?'s':''}`));
+    box.appendChild(hdr);
+
+    // Edit hint
+    const hint = el('div',{class:'edit-hint'});
+    hint.appendChild(icon('edit'));
+    hint.appendChild(el('span',{},'Tap any field below to correct the name, dose or time before adding'));
+    box.appendChild(hint);
+
+    ui.aiResult.forEach((m, i) => {
+      const row = el('div',{class:'ai-med-row'});
+
+      // Top row: icon + name
+      const top = el('div',{class:'ai-med-row-top'});
+      top.appendChild(el('div',{class:'ai-med-icon',style:{background:m.color}}, m.icon));
+      const nameWrap = el('div',{style:{flex:'1',minWidth:'0'}});
+      const nameIn = el('input',{class:'ai-edit-input',type:'text',value:m.name,placeholder:'Medicine name',
+        oninput:(e)=>updateAiMed(m._id,'name',e.target.value)});
+      // Highlight if name looks like OCR garbage (very short or has numbers)
+      if (!m.name || m.name.length < 3 || /\d{3}/.test(m.name)) nameIn.classList.add('highlight');
+      nameWrap.appendChild(nameIn);
+      top.appendChild(nameWrap);
+      // Remove this med
+      const delBtn = el('button',{class:'page-remove','aria-label':'Remove medicine',style:{marginLeft:'6px'},onclick:()=>removeAiMed(m._id)});
+      delBtn.appendChild(icon('x')); top.appendChild(delBtn);
+      row.appendChild(top);
+
+      // Edit grid: dose + notes
+      const grid = el('div',{class:'ai-edit-row'});
+      const doseF = el('div',{class:'ai-edit-field'});
+      doseF.appendChild(el('div',{class:'ai-edit-label'},'Dose'));
+      doseF.appendChild(el('input',{class:'ai-edit-input',type:'text',value:m.dose,placeholder:'500mg…',
+        oninput:(e)=>updateAiMed(m._id,'dose',e.target.value)}));
+      grid.appendChild(doseF);
+      const notesF = el('div',{class:'ai-edit-field'});
+      notesF.appendChild(el('div',{class:'ai-edit-label'},'Notes'));
+      notesF.appendChild(el('input',{class:'ai-edit-input',type:'text',value:m.notes,placeholder:'With food…',
+        oninput:(e)=>updateAiMed(m._id,'notes',e.target.value)}));
+      grid.appendChild(notesF);
+      row.appendChild(grid);
+
+      // Times row
+      const timesLabel = el('div',{class:'ai-edit-label',style:{marginTop:'8px',marginBottom:'4px'}},'Times');
+      row.appendChild(timesLabel);
+      const timesRow = el('div',{class:'ai-times-edit'});
+      m.times.forEach((t, ti) => {
+        const chip = el('div',{class:'ai-time-chip-edit'});
+        const tIn = el('input',{class:'ai-time-input',type:'time',value:t,
+          oninput:(e)=>{ m.times[ti]=e.target.value; }});
+        chip.appendChild(tIn);
+        if (m.times.length > 1) {
+          const rm = el('button',{class:'ai-time-remove',onclick:()=>removeAiTime(m._id,ti)});
+          rm.appendChild(icon('x')); chip.appendChild(rm);
+        }
+        timesRow.appendChild(chip);
+      });
+      const addTBtn = el('button',{class:'add-ai-time-btn',onclick:()=>addAiTime(m._id)},'+  time');
+      timesRow.appendChild(addTBtn);
+      row.appendChild(timesRow);
+      box.appendChild(row);
+    });
+
+    const cb = el('button',{class:'confirm-btn',onclick:confirmAI}, `Add ${ui.aiResult.length} medicine(s) to schedule`);
+    box.appendChild(cb);
+    const sb = el('button',{class:'discard-btn',onclick:()=>{
+      ui.uploadState='idle'; ui.aiResult=null; ui.pageQueue=[]; render();
+    }}, 'Discard & start over');
+    box.appendChild(sb);
+    wrap.appendChild(box);
+  }
+
+  // Info card
+  const info = el('div',{class:'info-card', style:{marginTop:'16px'}});
+  info.appendChild(icon('bell'));
+  const ip = el('p',{}, 'Reminders fire automatically 5 minutes before each dose. Enable notifications in the Today tab to receive alerts.');
+  info.appendChild(ip);
+  wrap.appendChild(info);
+  return wrap;
+}
+
+function renderHistory() {
+  const wrap = el('div',{});
+  const today = new Date();
+  const tk = todayKey();
+
+  // Stats
+  const allDoses = state.meds.flatMap(m=>m.times.map(t=>`${m.id}-${t}`));
+  const doneToday = allDoses.filter(k=>(state.history[tk]||{})[k]).length;
+  const total = allDoses.length;
+  const pct = total ? Math.round(doneToday/total*100) : 0;
+
+  // Streak calculation
+  let streak = 0;
+  for (let i=0; i<30; i++) {
+    const d = new Date(today); d.setDate(d.getDate()-i);
+    const k = `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+    const hist = state.history[k] || {};
+    const doseKeys = state.meds.flatMap(m=>m.times.map(t=>`${m.id}-${t}`));
+    if (!doseKeys.length) break;
+    const done = doseKeys.filter(dk=>hist[dk]).length;
+    if (done > 0) streak++; else if (i>0) break;
+  }
+
+  const sg = el('div',{class:'stat-grid'});
+  [
+    [pct+'%', 'Today', `${doneToday}/${total} doses`],
+    [streak+'d', 'Streak', 'days in a row'],
+    [state.meds.length+'', 'Medicines', 'active schedules'],
+    ['7d', 'Plan', 'calendar below'],
+  ].forEach(([v,l,s])=>{
+    const sc = el('div',{class:'stat-card'});
+    sc.appendChild(el('div',{class:'stat-val'},v));
+    sc.appendChild(el('div',{class:'stat-label'},l));
+    sc.appendChild(el('div',{class:'stat-sub'},s));
+    sg.appendChild(sc);
+  });
+  wrap.appendChild(sg);
+
+  // Streak bar (last 14 days)
+  wrap.appendChild(el('p',{class:'sec-label'},'14-day streak'));
+  const sb = el('div',{class:'streak-row'});
+  for (let i=13; i>=0; i--) {
+    const d=new Date(today); d.setDate(d.getDate()-i);
+    const k=`${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+    const hist=state.history[k]||{};
+    const keys=state.meds.flatMap(m=>m.times.map(t=>`${m.id}-${t}`));
+    const on = keys.length && keys.some(dk=>hist[dk]);
+    const isToday = i===0;
+    const seg=el('div',{class:`streak-seg${on?' on':''}${isToday?' today':''}`});
+    sb.appendChild(seg);
+  }
+  wrap.appendChild(sb);
+
+  // Weekly bar chart
+  wrap.appendChild(el('p',{class:'sec-label'},'This week'));
+  const wc = el('div',{class:'week-chart'});
+  for (let i=6; i>=0; i--) {
+    const d=new Date(today); d.setDate(d.getDate()-i);
+    const k=`${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+    const hist=state.history[k]||{};
+    const keys=state.meds.flatMap(m=>m.times.map(t=>`${m.id}-${t}`));
+    const done=keys.filter(dk=>hist[dk]).length;
+    const pctH = keys.length ? (done/keys.length) : 0;
+    const wrap2=el('div',{class:'week-bar-wrap'});
+    const bar=el('div',{class:`week-bar${pctH===0?' dim':''}`, style:{height:`${Math.max(4,Math.round(pctH*72))}px`}});
+    wrap2.appendChild(bar);
+    wrap2.appendChild(el('div',{class:'week-label'}, DAYS[d.getDay()]));
+    wc.appendChild(wrap2);
+  }
+  wrap.appendChild(wc);
+
+  // Calendar
+  wrap.appendChild(el('p',{class:'sec-label'},'Calendar'));
+  const chr = el('div',{class:'cal-header-row'});
+  DAYS.forEach(d=>chr.appendChild(el('div',{class:'cal-dh'},d)));
+  wrap.appendChild(chr);
+
+  const cal = el('div',{class:'cal-grid'});
+  const firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
+  const start = new Date(firstDay); start.setDate(1-start.getDay());
+  for (let i=0; i<35; i++) {
+    const d = new Date(start); d.setDate(d.getDate()+i);
+    const k=`${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+    const hist=state.history[k]||{};
+    const keys=state.meds.flatMap(m=>m.times.map(t=>`${m.id}-${t}`));
+    const isToday=d.toDateString()===today.toDateString();
+    const hasMeds=keys.length>0;
+    const allDone=hasMeds&&keys.every(dk=>hist[dk]);
+    const otherMonth=d.getMonth()!==today.getMonth();
+    const cell=el('div',{class:`cal-cell${isToday?' today':allDone?' complete':hasMeds&&!otherMonth?' has':''}${otherMonth?' other-month':''}`, title:k}, d.getDate()+'');
+    cal.appendChild(cell);
+  }
+  wrap.appendChild(cal);
+  return wrap;
+}
+
+function renderAddModal() {
+  const nm = ui.newMed;
+  const backdrop = el('div',{class:'modal-backdrop', onclick:(e)=>{if(e.target===backdrop)closeModal();}});
+  const sheet = el('div',{class:'modal-sheet'});
+  sheet.appendChild(el('div',{class:'modal-handle'}));
+  sheet.appendChild(el('div',{class:'modal-title'},'Add medicine'));
+
+  // Name
+  const g1=el('div',{class:'form-group'});
+  g1.appendChild(el('label',{class:'form-label'},'Medicine name'));
+  const nameIn=el('input',{class:'form-input',type:'text',placeholder:'e.g. Paracetamol',value:nm.name,
+    oninput:(e)=>{nm.name=e.target.value;}});
+  g1.appendChild(nameIn); sheet.appendChild(g1);
+
+  // Dose
+  const g2=el('div',{class:'form-group'});
+  g2.appendChild(el('label',{class:'form-label'},'Dose'));
+  const doseIn=el('input',{class:'form-input',type:'text',placeholder:'500mg, 1 tablet…',value:nm.dose,
+    oninput:(e)=>{nm.dose=e.target.value;}});
+  g2.appendChild(doseIn); sheet.appendChild(g2);
+
+  // Times
+  const g3=el('div',{class:'form-group'});
+  g3.appendChild(el('label',{class:'form-label'},'Time(s)'));
+  const tb=el('div',{class:'times-builder'});
+  nm.times.forEach((t,i)=>{
+    const row=el('div',{class:'time-entry'});
+    const tin=el('input',{class:'form-input',type:'time',value:t,
+      oninput:(e)=>{nm.times[i]=e.target.value;}});
+    row.appendChild(tin);
+    if (nm.times.length>1) {
+      const rm=el('button',{class:'remove-time',onclick:()=>{nm.times.splice(i,1);render();}});
+      rm.appendChild(icon('x')); row.appendChild(rm);
+    }
+    tb.appendChild(row);
+  });
+  const addTimeBtn=el('button',{class:'add-time-btn',onclick:()=>{nm.times.push('12:00');render();}});
+  addTimeBtn.appendChild(icon('plus')); addTimeBtn.appendChild(text(' Add another time'));
+  tb.appendChild(addTimeBtn);
+  g3.appendChild(tb); sheet.appendChild(g3);
+
+  // Notes
+  const g4=el('div',{class:'form-group'});
+  g4.appendChild(el('label',{class:'form-label'},'Notes / instructions'));
+  const noteIn=el('input',{class:'form-input',type:'text',placeholder:'Take with food, avoid dairy…',value:nm.notes,
+    oninput:(e)=>{nm.notes=e.target.value;}});
+  g4.appendChild(noteIn); sheet.appendChild(g4);
+
+  // Color
+  const g5=el('div',{class:'form-group'});
+  g5.appendChild(el('label',{class:'form-label'},'Color'));
+  const cr=el('div',{class:'color-row'});
+  COLORS.forEach(c=>{
+    const d=el('div',{class:`color-dot${nm.color===c?' sel':''}`,style:{background:c},
+      onclick:()=>{nm.color=c;render();}});
+    cr.appendChild(d);
+  });
+  g5.appendChild(cr); sheet.appendChild(g5);
+
+  // Icon
+  const g6=el('div',{class:'form-group'});
+  g6.appendChild(el('label',{class:'form-label'},'Icon'));
+  const ir=el('div',{class:'icon-row'});
+  ICONS.forEach(ic2=>{
+    const d=el('div',{class:`icon-opt${nm.icon===ic2?' sel':''}`,style:{background:nm.color},
+      onclick:()=>{nm.icon=ic2;render();}}, ic2);
+    ir.appendChild(d);
+  });
+  g6.appendChild(ir); sheet.appendChild(g6);
+
+  const actions=el('div',{class:'modal-actions'});
+  const cancel=el('button',{class:'btn-cancel',onclick:closeModal},'Cancel');
+  const save=el('button',{class:'btn-save',onclick:saveMed},'Save medicine');
+  actions.appendChild(cancel); actions.appendChild(save);
+  sheet.appendChild(actions);
+
+  backdrop.appendChild(sheet);
+  return backdrop;
+}
+
+
+// ═══════════════════════════════════════════════════
+//  VITALS HELPERS
+// ═══════════════════════════════════════════════════
+function nowDatetimeLocal() {
+  const n = new Date();
+  const tz = n.getTimezoneOffset();
+  const local = new Date(n.getTime() - tz * 60000);
+  return local.toISOString().slice(0,16);
+}
+
+function fmtDatetime(dtStr) {
+  if (!dtStr) return '';
+  const d = new Date(dtStr);
+  return d.toLocaleString([], {day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'});
+}
+
+function bsrStatus(val) {
+  const v = parseFloat(val);
+  if (isNaN(v)) return null;
+  if (v < 4.0) return {label:'Low',cls:'badge-low'};
+  if (v <= 7.8) return {label:'Normal',cls:'badge-normal'};
+  if (v <= 11.0) return {label:'High',cls:'badge-high'};
+  return {label:'Very High',cls:'badge-danger'};
+}
+
+function bpStatus(sys, dia) {
+  const s = parseFloat(sys), d = parseFloat(dia);
+  if (isNaN(s)||isNaN(d)) return null;
+  if (s < 90 || d < 60) return {label:'Low',cls:'badge-low'};
+  if (s <= 120 && d <= 80) return {label:'Normal',cls:'badge-normal'};
+  if (s <= 139 || d <= 89) return {label:'Elevated',cls:'badge-high'};
+  return {label:'High',cls:'badge-danger'};
+}
+
+function openVitalForm(type) {
+  ui.vitalForm = { type, datetime: nowDatetimeLocal(), bsr:'', systolic:'', diastolic:'', notes:'' };
+  ui.modal = 'vital-form';
+  render();
+}
+
+function saveVital() {
+  const f = ui.vitalForm;
+  if (f.type === 'bsr' && !f.bsr) { showToast('Enter a BSR value','ti-alert-circle'); return; }
+  if (f.type === 'bp' && (!f.systolic || !f.diastolic)) { showToast('Enter both BP values','ti-alert-circle'); return; }
+  state.readings.push({ id: uid(), type: f.type, datetime: f.datetime, bsr: f.bsr, systolic: f.systolic, diastolic: f.diastolic, notes: f.notes });
+  state.readings.sort((a,b) => new Date(b.datetime) - new Date(a.datetime));
+  saveState();
+  ui.modal = null; ui.vitalForm = null;
+  showToast('Reading saved', 'ti-check');
+  render();
+}
+
+function deleteReading(id) {
+  state.readings = state.readings.filter(r => r.id !== id);
+  saveState();
+  showToast('Reading deleted', 'ti-trash');
+  render();
+}
+
+// ═══════════════════════════════════════════════════
+//  RENDER VITALS TAB
+// ═══════════════════════════════════════════════════
+
+// ═══════════════════════════════════════════════════
+//  EXPORT / DOWNLOAD
+// ═══════════════════════════════════════════════════
+function todayDateStr() {
+  const n = new Date();
+  return `${n.getFullYear()}-${pad(n.getMonth()+1)}-${pad(n.getDate())}`;
+}
+function monthAgoStr() {
+  const n = new Date(); n.setMonth(n.getMonth()-1);
+  return `${n.getFullYear()}-${pad(n.getMonth()+1)}-${pad(n.getDate())}`;
+}
+
+function openExportModal(type) {
+  ui.exportModal = { type, dateFrom: monthAgoStr(), dateTo: todayDateStr() };
+  ui.modal = 'export';
+  render();
+}
+
+function filteredReadings() {
+  const { type, dateFrom, dateTo } = ui.exportModal;
+  const from = dateFrom ? new Date(dateFrom + 'T00:00:00') : null;
+  const to   = dateTo   ? new Date(dateTo   + 'T23:59:59') : null;
+  return state.readings
+    .filter(r => r.type === type)
+    .filter(r => {
+      const d = new Date(r.datetime);
+      if (from && d < from) return false;
+      if (to   && d > to)   return false;
+      return true;
+    })
+    .sort((a,b) => new Date(a.datetime) - new Date(b.datetime));
+}
+
+function downloadCSV() {
+  const rows = filteredReadings();
+  const { type } = ui.exportModal;
+  let csv = '';
+  if (type === 'bsr') {
+    csv += 'Date,Time,BSR (mmol/L),Status,Notes\n';
+    rows.forEach(r => {
+      const d = new Date(r.datetime);
+      const st = bsrStatus(r.bsr);
+      csv += `"${d.toLocaleDateString()}","${d.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'})}","${parseFloat(r.bsr).toFixed(1)}","${st?.label||''}","${(r.notes||'').replace(/"/g,"'")}"\n`;
+    });
+  } else {
+    csv += 'Date,Time,Systolic (mmHg),Diastolic (mmHg),Status,Notes\n';
+    rows.forEach(r => {
+      const d = new Date(r.datetime);
+      const st = bpStatus(r.systolic, r.diastolic);
+      csv += `"${d.toLocaleDateString()}","${d.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'})}","${r.systolic}","${r.diastolic}","${st?.label||''}","${(r.notes||'').replace(/"/g,"'")}"\n`;
+    });
+  }
+  const blob = new Blob([csv], {type:'text/csv'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  const label = type === 'bsr' ? 'BSR' : 'BP';
+  a.download = `MedTrack_${label}_${ui.exportModal.dateFrom}_to_${ui.exportModal.dateTo}.csv`;
+  a.click();
+  URL.revokeObjectURL(url);
+  ui.modal = null; ui.exportModal = null;
+  showToast('CSV downloaded', 'ti-download');
+  render();
+}
+
+function printPDF() {
+  const rows = filteredReadings();
+  const { type, dateFrom, dateTo } = ui.exportModal;
+  const label = type === 'bsr' ? 'Blood Sugar (BSR)' : 'Blood Pressure (BP)';
+  let tableHTML = '';
+  if (type === 'bsr') {
+    tableHTML = `<table>
+      <thead><tr><th>Date</th><th>Time</th><th>BSR (mmol/L)</th><th>Status</th><th>Notes</th></tr></thead>
+      <tbody>`;
+    rows.forEach(r => {
+      const d = new Date(r.datetime);
+      const st = bsrStatus(r.bsr);
+      tableHTML += `<tr>
+        <td>${d.toLocaleDateString()}</td>
+        <td>${d.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}</td>
+        <td><strong>${parseFloat(r.bsr).toFixed(1)}</strong></td>
+        <td><span class="badge ${st?.cls||''}">${st?.label||'—'}</span></td>
+        <td>${r.notes||''}</td>
+      </tr>`;
+    });
+    tableHTML += '</tbody></table>';
+  } else {
+    tableHTML = `<table>
+      <thead><tr><th>Date</th><th>Time</th><th>Systolic</th><th>Diastolic</th><th>Status</th><th>Notes</th></tr></thead>
+      <tbody>`;
+    rows.forEach(r => {
+      const d = new Date(r.datetime);
+      const st = bpStatus(r.systolic, r.diastolic);
+      tableHTML += `<tr>
+        <td>${d.toLocaleDateString()}</td>
+        <td>${d.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}</td>
+        <td><strong>${r.systolic}</strong></td>
+        <td><strong>${r.diastolic}</strong></td>
+        <td><span class="badge ${st?.cls||''}">${st?.label||'—'}</span></td>
+        <td>${r.notes||''}</td>
+      </tr>`;
+    });
+    tableHTML += '</tbody></table>';
+  }
+  const avg = type === 'bsr'
+    ? (rows.length ? (rows.reduce((s,r)=>s+parseFloat(r.bsr),0)/rows.length).toFixed(1)+' mmol/L' : '—')
+    : (rows.length ? Math.round(rows.reduce((s,r)=>s+parseFloat(r.systolic),0)/rows.length)+'/'+Math.round(rows.reduce((s,r)=>s+parseFloat(r.diastolic),0)/rows.length)+' mmHg' : '—');
+
+  const area = document.getElementById('print-area');
+  area.innerHTML = `
+    <h1>MedTrack — ${label} Report</h1>
+    <div class="print-meta">Period: ${dateFrom} to ${dateTo} &nbsp;·&nbsp; ${rows.length} reading(s) &nbsp;·&nbsp; Average: ${avg} &nbsp;·&nbsp; Generated: ${new Date().toLocaleString()}</div>
+    ${tableHTML}
+  `;
+  ui.modal = null; ui.exportModal = null;
+  render();
+  setTimeout(() => window.print(), 80);
+}
+
+function renderExportModal() {
+  const em = ui.exportModal;
+  const rows = filteredReadings();
+  const label = em.type === 'bsr' ? 'Blood Sugar (BSR)' : 'Blood Pressure (BP)';
+
+  const backdrop = el('div',{class:'modal-backdrop', onclick:(e)=>{if(e.target===backdrop){ui.modal=null;ui.exportModal=null;render();}}});
+  const sheet = el('div',{class:'modal-sheet'});
+  sheet.appendChild(el('div',{class:'modal-handle'}));
+  sheet.appendChild(el('div',{class:'modal-title'}, `Download ${label}`));
+
+  // Date range
+  const dr = el('div',{class:'date-range-row'});
+  const gf = el('div',{class:'form-group',style:{margin:0}});
+  gf.appendChild(el('label',{class:'form-label'},'From'));
+  gf.appendChild(el('input',{class:'form-input',type:'date',value:em.dateFrom,
+    oninput:(e)=>{ em.dateFrom=e.target.value; rerenderExportPreview(); }}));
+  dr.appendChild(gf);
+  const gt = el('div',{class:'form-group',style:{margin:0}});
+  gt.appendChild(el('label',{class:'form-label'},'To'));
+  gt.appendChild(el('input',{class:'form-input',type:'date',value:em.dateTo,
+    oninput:(e)=>{ em.dateTo=e.target.value; rerenderExportPreview(); }}));
+  dr.appendChild(gt);
+  sheet.appendChild(dr);
+
+  // Preview count
+  const preview = el('div',{class:'export-preview',id:'export-preview'});
+  preview.innerHTML = exportPreviewText(rows);
+  sheet.appendChild(preview);
+
+  // Quick range shortcuts
+  const shortcuts = el('div',{style:{display:'flex',gap:'6px',flexWrap:'wrap',marginBottom:'16px'}});
+  [['Last 7 days',7],['Last 30 days',30],['Last 3 months',90],['All time',null]].forEach(([lb,days]) => {
+    const btn = el('button',{class:'add-ai-time-btn',style:{fontSize:'11px',padding:'4px 10px'},
+      onclick:()=>{
+        const to = new Date();
+        em.dateTo = `${to.getFullYear()}-${pad(to.getMonth()+1)}-${pad(to.getDate())}`;
+        if (days === null) {
+          em.dateFrom = '2020-01-01';
+        } else {
+          const from = new Date(); from.setDate(from.getDate()-days);
+          em.dateFrom = `${from.getFullYear()}-${pad(from.getMonth()+1)}-${pad(from.getDate())}`;
+        }
+        ui.modal = null; ui.exportModal = null;
+        // Re-open with updated values
+        ui.exportModal = {...em};
+        ui.modal = 'export';
+        render();
+      }}, lb);
+    shortcuts.appendChild(btn);
+  });
+  sheet.appendChild(shortcuts);
+
+  // Download buttons
+  const btns = el('div',{style:{display:'flex',gap:'10px',marginTop:'4px'}});
+  const csvBtn = el('button',{class:'export-btn csv',onclick:downloadCSV});
+  csvBtn.appendChild(icon('table-export')); csvBtn.appendChild(el('span',{},'Download CSV'));
+  btns.appendChild(csvBtn);
+  const pdfBtn = el('button',{class:'export-btn pdf',onclick:printPDF});
+  pdfBtn.appendChild(icon('file-type-pdf')); pdfBtn.appendChild(el('span',{},'Save as PDF'));
+  btns.appendChild(pdfBtn);
+  sheet.appendChild(btns);
+
+  const hint = el('p',{style:{fontSize:'11px',color:'var(--text3)',marginTop:'12px',textAlign:'center'}},
+    'CSV opens in Excel / Sheets. PDF: use "Save as PDF" in your print dialog.');
+  sheet.appendChild(hint);
+
+  const cancelBtn = el('button',{class:'btn-cancel',style:{width:'100%',marginTop:'10px'},
+    onclick:()=>{ui.modal=null;ui.exportModal=null;render();}},'Cancel');
+  sheet.appendChild(cancelBtn);
+
+  backdrop.appendChild(sheet);
+  return backdrop;
+}
+
+function exportPreviewText(rows) {
+  if (!rows.length) return '<span>No readings found in this date range</span>';
+  const em = ui.exportModal;
+  return `<strong>${rows.length}</strong> reading(s) from <strong>${em.dateFrom}</strong> to <strong>${em.dateTo}</strong> will be exported`;
+}
+
+function rerenderExportPreview() {
+  const preview = document.getElementById('export-preview');
+  if (preview) preview.innerHTML = exportPreviewText(filteredReadings());
+}
+
+function renderVitals() {
+  const wrap = el('div',{});
+  const type = ui.vitalsView;
+  const readings = state.readings.filter(r => r.type === type);
+
+  // ── Type toggle ──
+  const toggle = el('div',{class:'vitals-toggle'});
+  [['bsr','droplet','Blood Sugar'],['bp','heart','Blood Pressure']].forEach(([t,ic,lb]) => {
+    const btn = el('button',{class:`vt-btn${type===t?' active':''}`, onclick:()=>{ui.vitalsView=t;render();}});
+    btn.appendChild(icon(ic)); btn.appendChild(el('span',{},lb));
+    toggle.appendChild(btn);
+  });
+  wrap.appendChild(toggle);
+
+  // ── Summary cards ──
+  const latest = readings[0] || null;
+  if (type === 'bsr') {
+    const vals = readings.map(r=>parseFloat(r.bsr)).filter(v=>!isNaN(v));
+    const last = vals[0];
+    const avg = vals.length ? (vals.reduce((a,b)=>a+b,0)/vals.length) : null;
+    const min = vals.length ? Math.min(...vals) : null;
+    const st = last != null ? bsrStatus(last) : null;
+    const sg = el('div',{class:'vitals-summary'});
+    [
+      [last!=null?last.toFixed(1):'—', 'mmol/L', 'Latest', st],
+      [avg!=null?avg.toFixed(1):'—', 'mmol/L', 'Average', null],
+      [min!=null?min.toFixed(1):'—', 'mmol/L', 'Lowest', null],
+    ].forEach(([v,unit,label,status]) => {
+      const c = el('div',{class:'vs-card'});
+      const vcls = status ? (status.cls==='badge-normal'?'ok':status.cls==='badge-low'?'ok':'danger') : '';
+      c.appendChild(el('div',{class:`vs-val${vcls?' '+vcls:''}`}, v));
+      c.appendChild(el('div',{class:'vs-unit'}, unit));
+      c.appendChild(el('div',{class:'vs-label'}, label));
+      sg.appendChild(c);
+    });
+    wrap.appendChild(sg);
+  } else {
+    const sysList = readings.map(r=>parseFloat(r.systolic)).filter(v=>!isNaN(v));
+    const diaList = readings.map(r=>parseFloat(r.diastolic)).filter(v=>!isNaN(v));
+    const lastSys = sysList[0], lastDia = diaList[0];
+    const avgSys = sysList.length ? Math.round(sysList.reduce((a,b)=>a+b,0)/sysList.length) : null;
+    const avgDia = diaList.length ? Math.round(diaList.reduce((a,b)=>a+b,0)/diaList.length) : null;
+    const st = (lastSys&&lastDia) ? bpStatus(lastSys,lastDia) : null;
+    const sg = el('div',{class:'vitals-summary'});
+    [
+      [(lastSys&&lastDia)?`${lastSys}/${lastDia}`:'—', 'mmHg', 'Latest', st],
+      [(avgSys&&avgDia)?`${avgSys}/${avgDia}`:'—', 'mmHg', 'Average', null],
+      [readings.length+'', 'readings', 'Total', null],
+    ].forEach(([v,unit,label,status]) => {
+      const c = el('div',{class:'vs-card'});
+      const vcls = status ? (status.cls==='badge-normal'?'ok':status.cls.includes('danger')?'danger':'warn') : '';
+      c.appendChild(el('div',{class:`vs-val${vcls?' '+vcls:''}`}, v));
+      c.appendChild(el('div',{class:'vs-unit'}, unit));
+      c.appendChild(el('div',{class:'vs-label'}, label));
+      sg.appendChild(c);
+    });
+    wrap.appendChild(sg);
+  }
+
+  // ── Mini trend chart (last 10) ──
+  if (readings.length > 1) {
+    wrap.appendChild(el('p',{class:'sec-label'},'Trend — last 10 readings'));
+    const last10 = readings.slice(0,10).reverse();
+    const chart = el('div',{class:'mini-chart'});
+    if (type === 'bsr') {
+      const vals = last10.map(r=>parseFloat(r.bsr)||0);
+      const max = Math.max(...vals, 10);
+      vals.forEach((v,i) => {
+        const pct = max ? v/max : 0;
+        const st2 = bsrStatus(v);
+        const color = st2?.cls==='badge-normal'?'var(--green-mid)':st2?.cls==='badge-low'?'var(--blue)':st2?.cls==='badge-high'?'var(--orange)':'var(--red)';
+        chart.appendChild(el('div',{class:'mini-bar',style:{height:`${Math.max(4,Math.round(pct*32))}px`,background:color}}));
+      });
+    } else {
+      const vals = last10.map(r=>parseFloat(r.systolic)||0);
+      const max = Math.max(...vals, 140);
+      vals.forEach(v => {
+        const pct = max ? v/max : 0;
+        const st2 = bpStatus(v, v*0.65);
+        const color = st2?.cls==='badge-normal'?'var(--green-mid)':st2?.cls==='badge-low'?'var(--blue)':st2?.cls==='badge-high'?'var(--orange)':'var(--red)';
+        chart.appendChild(el('div',{class:'mini-bar',style:{height:`${Math.max(4,Math.round(pct*32))}px`,background:color}}));
+      });
+    }
+    wrap.appendChild(chart);
+    const chartLabels = el('div',{style:{display:'flex',justifyContent:'space-between',marginBottom:'14px'}});
+    chartLabels.appendChild(el('span',{style:{fontSize:'10px',color:'var(--text3)'}}, readings.length>1?fmtDatetime(readings[Math.min(9,readings.length-1)].datetime).split(',')[0]:''));
+    chartLabels.appendChild(el('span',{style:{fontSize:'10px',color:'var(--text3)'}}, 'Latest'));
+    wrap.appendChild(chartLabels);
+  }
+
+  // ── Add button ──
+  const addBtn = el('button',{class:'add-vital-btn', onclick:()=>openVitalForm(type)});
+  addBtn.appendChild(icon(type==='bsr'?'droplet-plus':'heart-plus'));
+  addBtn.appendChild(el('span',{}, type==='bsr'?'Add BSR Reading':'Add BP Reading'));
+  wrap.appendChild(addBtn);
+
+  // ── Export bar ──
+  if (readings.length) {
+    const exportBar = el('div',{class:'export-bar'});
+    exportBar.appendChild(icon('download'));
+    exportBar.appendChild(el('span',{class:'export-bar-label'}, `Export ${readings.length} reading(s)`));
+    const ecsvBtn = el('button',{class:'export-btn csv',onclick:()=>openExportModal(type)});
+    ecsvBtn.appendChild(icon('table-export')); ecsvBtn.appendChild(el('span',{},'Export'));
+    exportBar.appendChild(ecsvBtn);
+    wrap.appendChild(exportBar);
+  }
+
+  // ── Readings list ──
+  if (!readings.length) {
+    const empty = el('div',{class:'empty'});
+    empty.appendChild(icon(type==='bsr'?'droplet-off':'heart-off'));
+    empty.appendChild(el('p',{}, type==='bsr'?'No BSR readings yet':'No BP readings yet'));
+    empty.appendChild(el('small',{}, 'Tap the button above to log your first reading'));
+    wrap.appendChild(empty);
+  } else {
+    wrap.appendChild(el('p',{class:'sec-label'}, 'All readings'));
+    readings.forEach(r => {
+      const card = el('div',{class:'reading-card'});
+      const ico = el('div',{class:`reading-icon ${r.type}`});
+      ico.appendChild(icon(r.type==='bsr'?'droplet':'heart'));
+      card.appendChild(ico);
+      const info = el('div',{class:'reading-info'});
+      if (r.type === 'bsr') {
+        const vDiv = el('div',{class:'reading-val'});
+        vDiv.appendChild(text(parseFloat(r.bsr).toFixed(1)));
+        vDiv.appendChild(el('span',{class:'unit'},'mmol/L'));
+        info.appendChild(vDiv);
+        const st2 = bsrStatus(r.bsr);
+        if (st2) { const b=el('div',{class:`reading-badge ${st2.cls}`}); b.appendChild(icon('circle-filled','')); b.appendChild(text(' '+st2.label)); info.appendChild(b); }
+      } else {
+        const vDiv = el('div',{class:'reading-val'});
+        vDiv.appendChild(text(`${r.systolic}/${r.diastolic}`));
+        vDiv.appendChild(el('span',{class:'unit'},'mmHg'));
+        info.appendChild(vDiv);
+        const st2 = bpStatus(r.systolic, r.diastolic);
+        if (st2) { const b=el('div',{class:`reading-badge ${st2.cls}`}); b.appendChild(icon('circle-filled','')); b.appendChild(text(' '+st2.label)); info.appendChild(b); }
+      }
+      info.appendChild(el('div',{class:'reading-meta'}, fmtDatetime(r.datetime)));
+      if (r.notes) info.appendChild(el('div',{class:'reading-notes-text'}, r.notes));
+      card.appendChild(info);
+      const del = el('button',{class:'reading-del','aria-label':'Delete', onclick:()=>deleteReading(r.id)});
+      del.appendChild(icon('trash')); card.appendChild(del);
+      wrap.appendChild(card);
+    });
+  }
+  return wrap;
+}
+
+// ═══════════════════════════════════════════════════
+//  VITAL FORM MODAL
+// ═══════════════════════════════════════════════════
+function renderVitalModal() {
+  const f = ui.vitalForm;
+  const isBsr = f.type === 'bsr';
+  const backdrop = el('div',{class:'modal-backdrop', onclick:(e)=>{if(e.target===backdrop){ui.modal=null;ui.vitalForm=null;render();}}});
+  const sheet = el('div',{class:'modal-sheet'});
+  sheet.appendChild(el('div',{class:'modal-handle'}));
+  sheet.appendChild(el('div',{class:'modal-title'}, isBsr?'Log Blood Sugar (BSR)':'Log Blood Pressure (BP)'));
+
+  // Date & time (default = now, editable)
+  const gdt = el('div',{class:'form-group'});
+  gdt.appendChild(el('label',{class:'form-label'},'Date & Time'));
+  gdt.appendChild(el('input',{class:'form-input',type:'datetime-local',value:f.datetime,
+    oninput:(e)=>{ f.datetime=e.target.value; }}));
+  sheet.appendChild(gdt);
+
+  if (isBsr) {
+    const g1 = el('div',{class:'form-group'});
+    g1.appendChild(el('label',{class:'form-label'},'Blood Sugar Level'));
+    const wrap2 = el('div',{class:'form-unit-wrap'});
+    const inp = el('input',{class:'form-input',type:'number',step:'0.1',min:'1',max:'30',placeholder:'e.g. 5.4',value:f.bsr,
+      oninput:(e)=>{ f.bsr=e.target.value; }});
+    inp.style.paddingRight = '60px';
+    wrap2.appendChild(inp);
+    wrap2.appendChild(el('span',{class:'form-unit-label'},'mmol/L'));
+    g1.appendChild(wrap2);
+    g1.appendChild(el('div',{class:'range-guide'},'Normal fasting: 4.0–5.9 · Post-meal: 4.0–7.8'));
+    sheet.appendChild(g1);
+  } else {
+    const grid = el('div',{class:'vital-form-grid'});
+    const g1 = el('div',{class:'form-group',style:{margin:0}});
+    g1.appendChild(el('label',{class:'form-label'},'Systolic (upper)'));
+    const w1 = el('div',{class:'form-unit-wrap'});
+    const i1 = el('input',{class:'form-input',type:'number',min:'60',max:'250',placeholder:'e.g. 120',value:f.systolic,
+      oninput:(e)=>{ f.systolic=e.target.value; }});
+    i1.style.paddingRight = '48px';
+    w1.appendChild(i1); w1.appendChild(el('span',{class:'form-unit-label'},'mmHg'));
+    g1.appendChild(w1); grid.appendChild(g1);
+    const g2 = el('div',{class:'form-group',style:{margin:0}});
+    g2.appendChild(el('label',{class:'form-label'},'Diastolic (lower)'));
+    const w2 = el('div',{class:'form-unit-wrap'});
+    const i2 = el('input',{class:'form-input',type:'number',min:'40',max:'150',placeholder:'e.g. 80',value:f.diastolic,
+      oninput:(e)=>{ f.diastolic=e.target.value; }});
+    i2.style.paddingRight = '48px';
+    w2.appendChild(i2); w2.appendChild(el('span',{class:'form-unit-label'},'mmHg'));
+    g2.appendChild(w2); grid.appendChild(g2);
+    sheet.appendChild(grid);
+    const guide = el('div',{class:'form-group'});
+    guide.appendChild(el('div',{class:'range-guide'},'Normal: below 120/80 · Elevated: 120–139/80–89 · High: 140+/90+'));
+    sheet.appendChild(guide);
+  }
+
+  // Notes
+  const gn = el('div',{class:'form-group'});
+  gn.appendChild(el('label',{class:'form-label'},'Notes (optional)'));
+  gn.appendChild(el('input',{class:'form-input',type:'text',placeholder:'e.g. After meal, feeling dizzy…',value:f.notes,
+    oninput:(e)=>{ f.notes=e.target.value; }}));
+  sheet.appendChild(gn);
+
+  const actions = el('div',{class:'modal-actions'});
+  const cancel = el('button',{class:'btn-cancel',onclick:()=>{ui.modal=null;ui.vitalForm=null;render();}},'Cancel');
+  const save = el('button',{class:'btn-save',onclick:saveVital},'Save reading');
+  actions.appendChild(cancel); actions.appendChild(save);
+  sheet.appendChild(actions);
+  backdrop.appendChild(sheet);
+  return backdrop;
+}
+
+function render() {
+  const app = document.getElementById('app');
+  app.innerHTML = '';
+
+  // Show auth if not logged in
+  if (!currentUser) {
+    app.appendChild(renderAuthScreen());
+    if (ui.toast) {
+      const t = el('div',{class:'toast'});
+      t.appendChild(icon(ui.toast.icon)); t.appendChild(text(ui.toast.msg));
+      app.appendChild(t);
+    }
+    return;
+  }
+
+  app.appendChild(renderHeader());
+  app.appendChild(renderTabs());
+
+  const scroll = el('div',{class:'scroll-area'});
+  if (ui.tab==='today') scroll.appendChild(renderToday());
+  if (ui.tab==='schedule') scroll.appendChild(renderSchedule());
+  if (ui.tab==='vitals') scroll.appendChild(renderVitals());
+  if (ui.tab==='scan') scroll.appendChild(renderScan());
+  if (ui.tab==='history') scroll.appendChild(renderHistory());
+  app.appendChild(scroll);
+
+  if (ui.modal === 'add-med') app.appendChild(renderAddModal());
+  if (ui.modal === 'vital-form') app.appendChild(renderVitalModal());
+  if (ui.modal === 'export') app.appendChild(renderExportModal());
+
+  if (ui.toast) {
+    const t = el('div',{class:'toast'});
+    t.appendChild(icon(ui.toast.icon)); t.appendChild(text(ui.toast.msg));
+    app.appendChild(t);
+  }
+}
+
+// ═══════════════════════════════════════════════════
+//  AUTH LOGIC
+// ═══════════════════════════════════════════════════
+async function authSubmitPhone() {
+  const phone = ui.authPhone.trim().replace(/\s+/g,'');
+  if (phone.length < 7) { ui.authError = 'Enter a valid phone number'; render(); return; }
+  ui.authLoading = true; ui.authError = ''; render();
+  try {
+    const user = await fbGetUser(phone);
+    ui.authUserExists = !!user;
+    ui.authScreen = user ? 'pin-login' : 'pin-setup';
+    ui.authPin = '';
+  } catch(e) {
+    ui.authError = 'Connection error — check your internet';
+  }
+  ui.authLoading = false; render();
+}
+
+async function authSubmitPin() {
+  const phone = ui.authPhone.trim().replace(/\s+/g,'');
+  const pinHash = await hashPin(ui.authPin);
+  ui.authLoading = true; ui.authError = ''; render();
+  try {
+    const user = await fbGetUser(phone);
+    if (!user || user.pinHash !== pinHash) {
+      ui.authError = 'Incorrect PIN'; ui.authPin = '';
+      ui.authLoading = false; render(); return;
+    }
+    await loginUser(phone);
+  } catch(e) {
+    ui.authError = 'Connection error — check your internet';
+    ui.authLoading = false; render();
+  }
+}
+
+async function authSetupPin() {
+  if (ui.authPin.length < 4) { ui.authError = 'PIN must be 4 digits'; render(); return; }
+  ui.authScreen = 'pin-confirm'; ui.authPinConfirm = ''; render();
+}
+
+async function authConfirmPin() {
+  if (ui.authPin !== ui.authPinConfirm) {
+    ui.authError = 'PINs do not match'; ui.authPinConfirm = ''; render(); return;
+  }
+  const phone = ui.authPhone.trim().replace(/\s+/g,'');
+  const pinHash = await hashPin(ui.authPin);
+  ui.authLoading = true; ui.authError = ''; render();
+  try {
+    await fbCreateUser(phone, pinHash);
+    await loginUser(phone);
+  } catch(e) {
+    ui.authError = 'Could not create account — try again';
+    ui.authLoading = false; render();
+  }
+}
+
+async function loginUser(phone) {
+  currentUser = { phone };
+  localStorage.setItem('medtrack_session', phone);
+  // Load their data from Firestore
+  const data = await fbLoadData(phone);
+  if (data) {
+    state = { meds: data.meds||[], history: data.history||{}, readings: data.readings||[], notifAsked: data.notifAsked||false };
+  } else {
+    state = freshState();
+  }
+  ui.authPin = ''; ui.authPinConfirm = ''; ui.authError = '';
+  ui.authLoading = false;
+  showToast(`Welcome back!`, 'ti-home');
+  render();
+  scheduleNotifications();
+}
+
+function logout() {
+  currentUser = null;
+  state = freshState();
+  localStorage.removeItem('medtrack_session');
+  ui.authScreen = 'phone'; ui.authPhone = ''; ui.authPin = '';
+  ui.authPinConfirm = ''; ui.authError = ''; ui.authLoading = false;
+  ui.showLogout = false; ui.tab = 'today';
+  render();
+}
+
+// PIN keypad handler
+function pinKeyPress(key) {
+  const isConfirm = ui.authScreen === 'pin-confirm';
+  const current = isConfirm ? ui.authPinConfirm : ui.authPin;
+  ui.authError = '';
+  if (key === 'del') {
+    if (isConfirm) ui.authPinConfirm = current.slice(0,-1);
+    else ui.authPin = current.slice(0,-1);
+    render(); return;
+  }
+  if (current.length >= 4) return;
+  const next = current + key;
+  if (isConfirm) ui.authPinConfirm = next;
+  else ui.authPin = next;
+  render();
+  // Auto-submit when 4 digits entered
+  if (next.length === 4) {
+    setTimeout(() => {
+      if (ui.authScreen === 'pin-login') authSubmitPin();
+      else if (ui.authScreen === 'pin-setup') authSetupPin();
+      else if (ui.authScreen === 'pin-confirm') authConfirmPin();
+    }, 180);
+  }
+}
+
+// ── Auth screen renderer ──
+function renderAuthScreen() {
+  const screen = el('div',{class:'auth-screen'});
+  screen.appendChild(el('div',{class:'auth-logo'},'MedTrack'));
+  screen.appendChild(el('div',{class:'auth-tagline'},'Your personal health companion'));
+
+  const card = el('div',{class:'auth-card'});
+
+  if (ui.authLoading) {
+    const ld = el('div',{class:'auth-loading'});
+    ld.appendChild(icon('loader-2')); ld.appendChild(el('span',{},'Please wait…'));
+    card.appendChild(ld);
+    screen.appendChild(card);
+    return screen;
+  }
+
+  // ── Phone entry ──
+  if (ui.authScreen === 'phone') {
+    card.appendChild(el('div',{class:'auth-card-title'},'Welcome'));
+    card.appendChild(el('div',{class:'auth-card-sub'},'Enter your phone number to continue'));
+    const iw = el('div',{class:'auth-input-wrap'});
+    iw.appendChild(icon('phone', 'auth-input-icon'));
+    const inp = el('input',{class:'auth-input',type:'tel',placeholder:'e.g. 03001234567',
+      value: ui.authPhone,
+      oninput: (e)=>{ ui.authPhone=e.target.value; ui.authError=''; },
+      onkeydown: (e)=>{ if(e.key==='Enter') authSubmitPhone(); }
+    });
+    iw.appendChild(inp);
+    card.appendChild(iw);
+    card.appendChild(el('div',{class:'auth-error'}, ui.authError));
+    const btn = el('button',{class:'auth-btn', onclick:authSubmitPhone});
+    btn.appendChild(icon('arrow-right')); btn.appendChild(el('span',{},'Continue'));
+    card.appendChild(btn);
+    // Auto-focus
+    setTimeout(()=>inp.focus(), 50);
+  }
+
+  // ── PIN login ──
+  if (ui.authScreen === 'pin-login') {
+    card.appendChild(el('div',{class:'auth-card-title'},'Enter your PIN'));
+    card.appendChild(el('div',{class:'auth-card-sub'}, ui.authPhone));
+    renderPinDots(card, ui.authPin, !!ui.authError);
+    card.appendChild(el('div',{class:'auth-error'}, ui.authError));
+    renderPinPad(card);
+  }
+
+  // ── PIN setup ──
+  if (ui.authScreen === 'pin-setup') {
+    card.appendChild(el('div',{class:'auth-card-title'},'Create a PIN'));
+    card.appendChild(el('div',{class:'auth-card-sub'},'Choose a 4-digit PIN for your account'));
+    renderPinDots(card, ui.authPin, false);
+    card.appendChild(el('div',{class:'auth-error'}, ui.authError));
+    renderPinPad(card);
+  }
+
+  // ── PIN confirm ──
+  if (ui.authScreen === 'pin-confirm') {
+    card.appendChild(el('div',{class:'auth-card-title'},'Confirm your PIN'));
+    card.appendChild(el('div',{class:'auth-card-sub'},'Enter the same PIN again'));
+    renderPinDots(card, ui.authPinConfirm, !!ui.authError);
+    card.appendChild(el('div',{class:'auth-error'}, ui.authError));
+    renderPinPad(card);
+  }
+
+  screen.appendChild(card);
+
+  // Back button (not on phone screen)
+  if (ui.authScreen !== 'phone') {
+    const back = el('button',{class:'auth-back', onclick:()=>{
+      ui.authScreen='phone'; ui.authPin=''; ui.authPinConfirm=''; ui.authError=''; render();
+    }}, '← Use a different number');
+    screen.appendChild(back);
+  }
+
+  return screen;
+}
+
+function renderPinDots(parent, pin, isError) {
+  const dots = el('div',{class:'pin-dots'});
+  for (let i=0;i<4;i++) {
+    const d = el('div',{class:`pin-dot${pin.length>i?' filled':''}${isError?' error':''}`});
+    dots.appendChild(d);
+  }
+  parent.appendChild(dots);
+}
+
+function renderPinPad(parent) {
+  const pad = el('div',{class:'pin-pad'});
+  ['1','2','3','4','5','6','7','8','9','','0','del'].forEach(k => {
+    if (k === '') { pad.appendChild(el('div',{class:'pin-key empty'})); return; }
+    const btn = el('button',{class:`pin-key${k==='del'?' del':''}`, onclick:()=>pinKeyPress(k)});
+    btn.appendChild(k==='del' ? icon('backspace') : el('span',{},k));
+    pad.appendChild(btn);
+  });
+  parent.appendChild(pad);
+}
+
+// ═══════════════════════════════════════════════════
+//  BOOT
+// ═══════════════════════════════════════════════════
+loadState();
+
+// Check for saved session
+const savedPhone = localStorage.getItem('medtrack_session');
+if (savedPhone) {
+  ui.authLoading = true; render();
+  loginUser(savedPhone).catch(()=>{
+    localStorage.removeItem('medtrack_session');
+    ui.authLoading = false; render();
+  });
+} else {
+  render();
+}
+
+// Refresh every minute to update statuses
+setInterval(() => {
+  if (currentUser && ui.tab === 'today') render();
+}, 60000);
+</script>
+</body>
+</html>
